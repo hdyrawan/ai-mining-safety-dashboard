@@ -1,0 +1,78 @@
+:root {
+  /* ── Backgrounds ── */
+  --bg-base:        #0b0e1a;
+  --bg-primary:     #0f1322;
+  --bg-secondary:   #131827;
+  --bg-card:        #192030;
+  --bg-card-hover:  #1e2840;
+  --bg-input:       #111624;
+  --bg-overlay:     rgba(11,14,26,0.92);
+
+  /* ── Borders ── */
+  --border-base:    #1e2740;
+  --border-card:    #253050;
+  --border-accent:  #3a4f7a;
+  --border-focus:   #3b82f6;
+
+  /* ── Text ── */
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted:     #5a7090;
+  --text-dim:       #3a4f6a;
+
+  /* ── Accent / Brand ── */
+  --accent-blue:    #3b82f6;
+  --accent-blue-dim:#1d4ed8;
+  --accent-cyan:    #06b6d4;
+  --accent-indigo:  #6366f1;
+  --accent-teal:    #14b8a6;
+
+  /* ── Status Colors ── */
+  --status-ok:         #22c55e;
+  --status-ok-bg:      rgba(34,197,94,0.10);
+  --status-ok-border:  rgba(34,197,94,0.25);
+
+  --status-warn:       #f59e0b;
+  --status-warn-bg:    rgba(245,158,11,0.10);
+  --status-warn-border:rgba(245,158,11,0.25);
+
+  --status-crit:       #ef4444;
+  --status-crit-bg:    rgba(239,68,68,0.10);
+  --status-crit-border:rgba(239,68,68,0.25);
+
+  --status-info:       #3b82f6;
+  --status-info-bg:    rgba(59,130,246,0.10);
+  --status-info-border:rgba(59,130,246,0.25);
+
+  /* ── Sustainability Colors ── */
+  --sustain-green:  #10b981;
+  --sustain-blue:   #0ea5e9;
+  --sustain-amber:  #f59e0b;
+  --sustain-red:    #ef4444;
+
+  /* ── Typography ── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* ── Layout ── */
+  --header-h:   60px;
+  --sidebar-w:  220px;
+
+  /* ── Radius & Shadows ── */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  18px;
+
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.25);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.5);
+  --shadow-glow-blue:  0 0 16px rgba(59,130,246,0.3);
+  --shadow-glow-green: 0 0 16px rgba(34,197,94,0.3);
+  --shadow-glow-red:   0 0 16px rgba(239,68,68,0.3);
+  --shadow-glow-amber: 0 0 16px rgba(245,158,11,0.3);
+
+  /* ── Transitions ── */
+  --transition-fast: 0.12s ease;
+  --transition-base: 0.20s ease;
+  --transition-slow: 0.35s ease;
+}

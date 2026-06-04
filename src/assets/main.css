@@ -1,0 +1,57 @@
+/* ── Global overrides and component-level shared styles ── */
+
+/* Live indicator dot */
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--status-ok);
+  display: inline-block;
+  animation: blink 2s infinite;
+}
+.live-dot.warn   { background: var(--status-warn); }
+.live-dot.crit   { background: var(--status-crit); animation: blink 0.8s infinite; }
+
+/* Alert level colors */
+.level-critical { color: var(--status-crit); }
+.level-warning  { color: var(--status-warn); }
+.level-info     { color: var(--status-info); }
+.level-normal   { color: var(--status-ok); }
+
+/* Risk level backgrounds */
+.risk-critical { background: var(--status-crit-bg); border-color: var(--status-crit-border); }
+.risk-warning  { background: var(--status-warn-bg); border-color: var(--status-warn-border); }
+.risk-normal   { background: var(--status-ok-bg);   border-color: var(--status-ok-border); }
+
+/* Scenario banner */
+.scenario-banner {
+  background: var(--status-crit-bg);
+  border: 1px solid var(--status-crit-border);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--status-crit);
+  font-weight: 600;
+  margin-bottom: 16px;
+  animation: blink 2s infinite;
+}
+
+/* Value trend arrow */
+.trend-up   { color: var(--status-crit); }
+.trend-down { color: var(--status-ok); }
+.trend-stable { color: var(--text-muted); }
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  gap: 8px;
+}
+.empty-state-icon { font-size: 2rem; opacity: 0.5; }
