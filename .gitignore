@@ -36,3 +36,7 @@ yarn-error.log*
 *.tgz
 *.zip
 .cache/
+
+# Claude Code — never commit
+CLAUDE.md
+.claude/
