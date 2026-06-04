@@ -149,4 +149,9 @@ const heatStressRecs = [
 .ri-action { font-size:0.72rem; color:var(--accent-blue); }
 
 @media(max-width:900px){ .kpi-grid-8 { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:600px){
+  .kpi-grid-8 { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .rescue-grid { grid-template-columns:1fr; }
+  .critical-workers-banner .cw-item { flex-wrap:wrap; }
+}
 </style>

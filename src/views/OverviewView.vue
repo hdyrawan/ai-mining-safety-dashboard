@@ -132,6 +132,17 @@ const topPredictions = aiPredictions.slice(0, 2)
 .map-col { min-height: 360px; }
 .alerts-col { display: flex; flex-direction: column; overflow: hidden; max-height: 480px; }
 
+@media (max-width: 900px) {
+  .kpi-grid   { grid-template-columns: repeat(2, 1fr); }
+  .main-grid  { grid-template-columns: 1fr; }
+  .alerts-col { max-height: 320px; }
+  .page-header { flex-direction: column; gap: 8px; }
+}
+@media (max-width: 600px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .zone-chips { gap: 6px; }
+}
+
 .zone-chips { display: flex; flex-wrap: wrap; gap: 10px; }
 .zone-chip-card {
   padding: 10px 14px;

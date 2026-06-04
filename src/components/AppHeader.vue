@@ -7,11 +7,15 @@ const router = useRouter()
 const critCount = computed(() => store.criticalCount)
 
 function goPresentation() { router.push('/presentation') }
+function toggleSidebar() { store.toggleSidebar() }
 </script>
 
 <template>
   <header class="app-header">
     <div class="header-left">
+      <button class="hamburger-btn" @click="toggleSidebar" :class="{ open: store.sidebarOpen }" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
       <div class="header-icon">⛏️</div>
       <div class="header-info">
         <div class="header-title">AI Mining Safety &amp; Sustainability Command Center</div>
@@ -132,4 +136,40 @@ function goPresentation() { router.push('/presentation') }
   transition: background var(--transition-fast);
 }
 .btn-presentation:hover { background: #2563eb; }
+
+/* ── Hamburger — mobile only ── */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.hamburger-btn span {
+  display: block;
+  height: 2px;
+  background: var(--text-secondary);
+  border-radius: 2px;
+  transition: all 0.25s ease;
+  transform-origin: center;
+}
+.hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 900px) {
+  .hamburger-btn { display: flex; }
+  .header-icon   { display: none; }
+  .header-title  { font-size: 0.82rem; }
+  .header-sub    { display: none; }
+  .worker-count,
+  .drone-count   { display: none; }
+  .live-time     { display: none; }
+}
 </style>

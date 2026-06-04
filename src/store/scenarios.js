@@ -4,6 +4,11 @@ import { alerts as initialAlerts } from '../data/mockData.js'
 export const store = reactive({
   alerts: [...initialAlerts],
   activeScenario: null,
+  sidebarOpen: false,
+
+  toggleSidebar() { this.sidebarOpen = !this.sidebarOpen },
+  closeSidebar()  { this.sidebarOpen = false },
+
 
   triggerGasLeak() {
     this.activeScenario = 'gas_leak'

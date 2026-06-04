@@ -216,8 +216,32 @@ body {
 @media (max-width: 1280px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Tablet / small laptop */
 @media (max-width: 900px) {
   .page-content { margin-left: 0; padding: 16px; }
   .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .grid-2 { grid-template-columns: 1fr; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .page-content { padding: 12px 12px 40px; }
+  .grid-2, .grid-3, .grid-4, .grid-auto { grid-template-columns: 1fr; }
+
+  /* Card padding tighter on mobile */
+  .card-body  { padding: 12px; }
+  .card-header{ padding: 10px 12px 8px; }
+
+  /* Typography scale-down */
+  .page-title   { font-size: 1.1rem; }
+  .section-title{ font-size: 0.75rem; }
+  .value-xl     { font-size: 1.6rem; }
+  .value-lg     { font-size: 1.2rem; }
+
+  /* Tables — allow horizontal scroll */
+  .data-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Buttons row — wrap on small screens */
+  .btn + .btn { margin-top: 0; }
 }

@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { store } from '../store/scenarios.js'
 
+
 const route = useRoute()
 const critCount = computed(() => store.criticalCount)
 
@@ -21,7 +22,7 @@ function isActive(path) { return route.path === path || (path !== '/' && route.p
 </script>
 
 <template>
-  <nav class="sidebar">
+  <nav class="sidebar" :class="{ 'sidebar-open': store.sidebarOpen }">
     <div class="sidebar-inner">
       <div class="nav-section-label">OPERATIONS</div>
       <router-link
@@ -177,5 +178,19 @@ function isActive(path) { return route.path === path || (path !== '/' && route.p
   gap: 6px;
   font-size: 0.68rem;
   color: var(--status-ok);
+}
+
+/* ── Mobile overlay mode ── */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+    z-index: 90;
+  }
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+  }
 }
 </style>

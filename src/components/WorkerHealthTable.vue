@@ -57,7 +57,7 @@ function vitalsColor(v, warnLow, warnHigh) {
         </select>
       </div>
     </div>
-    <div class="wt-scroll">
+    <div class="wt-scroll data-table-wrap">
       <table class="data-table">
         <thead>
           <tr>
