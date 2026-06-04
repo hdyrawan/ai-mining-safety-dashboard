@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "wrangler pages deploy dist",
+    "deploy:build": "npm run build && wrangler pages deploy dist"
   },
   "dependencies": {
     "chart.js": "^4.4.6",
@@ -15,6 +17,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.0",
-    "vite": "^5.4.0"
+    "playwright": "^1.60.0",
+    "vite": "^5.4.0",
+    "wrangler": "^4.97.0"
   }
 }
