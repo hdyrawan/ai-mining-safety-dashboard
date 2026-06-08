@@ -140,6 +140,35 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
             </div>
           </div>
 
+          <!-- ── DASHBOARD slide ───────────────────────────────────── -->
+          <div v-else-if="slide.type === 'dashboard'" class="slide-dashboard-wrap">
+            <div class="dash-left">
+              <div class="pres-slide-number">{{ String(current + 1).padStart(2, '0') }}</div>
+              <div class="pres-slide-icon">{{ slide.icon }}</div>
+              <h1 class="pres-title">{{ slide.title }}</h1>
+              <p class="pres-subtitle">{{ slide.subtitle }}</p>
+              <ul class="pres-content-list">
+                <li v-for="(item, i) in slide.content" :key="i" :style="{ animationDelay: (i * 0.08) + 's' }">{{ item }}</li>
+              </ul>
+              <div class="pres-stat-card" style="margin-top:16px">
+                <div class="pres-stat-value">{{ slide.stat.value }}</div>
+                <div class="pres-stat-label">{{ slide.stat.label }}</div>
+              </div>
+            </div>
+            <div class="dash-right">
+              <div class="dash-right-header">
+                <span class="dash-live-dot"></span>
+                <span class="dash-live-label">Live Dashboard Preview</span>
+                <a :href="'/#' + slide.route" target="_blank" class="dash-open-btn">
+                  Open Full Screen ↗
+                </a>
+              </div>
+              <div class="iframe-shell">
+                <iframe :src="'/#' + slide.route" class="iframe-inner" scrolling="no"></iframe>
+              </div>
+            </div>
+          </div>
+
           <!-- ── THANK YOU slide ─────────────────────────────────── -->
           <div v-else-if="slide.type === 'thankyou'" class="slide-center-wrap ty-wrap">
             <div class="ty-icon">{{ slide.icon }}</div>
@@ -680,6 +709,81 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
 .pres-nav-btn.primary:hover:not(:disabled) { background: #2563eb; }
 .pres-progress-bar { flex: 1; height: 4px; background: var(--border-base); border-radius: 2px; overflow: hidden; }
 .pres-progress-fill { height: 100%; background: var(--slide-accent, var(--accent-blue)); border-radius: 2px; transition: width 0.4s ease; }
+
+/* ─────────────────────────────────────────────────────────────
+   DASHBOARD slide
+───────────────────────────────────────────────────────────── */
+.slide-dashboard-wrap {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 32px;
+  align-items: start;
+}
+.dash-left { display: flex; flex-direction: column; gap: 0; }
+.dash-right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+.dash-right-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.dash-live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--status-ok);
+  box-shadow: 0 0 6px var(--status-ok);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.dash-live-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--status-ok);
+  font-weight: 600;
+  flex: 1;
+}
+.dash-open-btn {
+  font-size: 0.72rem;
+  color: var(--accent-blue);
+  text-decoration: none;
+  border: 1px solid var(--accent-blue);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.dash-open-btn:hover { background: var(--accent-blue); color: white; }
+
+/* iframe shell — 2× render then scale to 50% to fill container */
+.iframe-shell {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-card);
+  background: #0b0e1a;
+  min-height: 200px;
+}
+.iframe-inner {
+  position: absolute;
+  top: 0; left: 0;
+  width: 200%;
+  height: 200%;
+  border: none;
+  transform: scale(0.5);
+  transform-origin: top left;
+}
 
 /* ── Transition ── */
 .slide-fade-enter-active { transition: all 0.3s ease; }

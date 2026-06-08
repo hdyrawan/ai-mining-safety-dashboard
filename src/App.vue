@@ -8,6 +8,8 @@ import { store } from './store/scenarios.js'
 const route = useRoute()
 const router = useRouter()
 const isFullscreen = computed(() => route.meta?.fullscreen === true)
+// Hide chrome when rendered inside a presentation iframe
+const isEmbedded = computed(() => { try { return window.self !== window.top } catch { return true } })
 
 // Close sidebar on route change (mobile nav)
 router.afterEach(() => store.closeSidebar())
@@ -15,11 +17,21 @@ router.afterEach(() => store.closeSidebar())
 
 <template>
   <div class="app-shell">
-    <template v-if="!isFullscreen">
+    <!-- Embedded in iframe: content only, no header/sidebar -->
+    <template v-if="isEmbedded">
+      <main class="embedded-shell">
+        <router-view />
+      </main>
+    </template>
+    <!-- Fullscreen (presentation view) -->
+    <template v-else-if="isFullscreen">
+      <router-view />
+    </template>
+    <!-- Normal desktop/mobile layout -->
+    <template v-else>
       <AppHeader />
       <div class="app-body">
         <Navigation />
-        <!-- Mobile backdrop -->
         <transition name="backdrop-fade">
           <div v-if="store.sidebarOpen" class="mobile-backdrop" @click="store.closeSidebar()"></div>
         </transition>
@@ -28,13 +40,20 @@ router.afterEach(() => store.closeSidebar())
         </main>
       </div>
     </template>
-    <template v-else>
-      <router-view />
-    </template>
   </div>
 </template>
 
 <style>
+/* Embedded iframe shell — full viewport, no offsets */
+.embedded-shell {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background: var(--bg-base);
+  padding: 20px 24px 32px;
+  box-sizing: border-box;
+}
+
 .mobile-backdrop {
   display: none;
 }

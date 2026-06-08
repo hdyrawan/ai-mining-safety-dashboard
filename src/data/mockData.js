@@ -316,6 +316,7 @@ export const kpiOverview = {
   evacuationReady:    { value:'98%',  label:'Evacuation Ready',  icon:'🚪', status:'normal',   change:'Route A & B clear' },
 }
 
+
 export const presentationSlides = [
 
   // ── 01 · Title ─────────────────────────────────────────────────────────
@@ -325,7 +326,7 @@ export const presentationSlides = [
     subtitle:'AI-Driven Mining Safety & Sustainability Command Center',
     institution:'Harbin Institute of Technology, Shenzhen (HITSZ)',
     course:'AI for Sustainable Development',
-    year:'2025',
+    year:'2026',
     icon:'⛏️',
     members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed'],
   },
@@ -334,18 +335,18 @@ export const presentationSlides = [
   {
     id:1, type:'team',
     title:'Meet the Team',
-    subtitle:'AI for Sustainable Development — HITSZ 2025',
+    subtitle:'AI for Sustainable Development — HITSZ 2026',
     icon:'👥',
     members:[
       { name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture' },
-      { name:'Sashi Kumar',        role:'AI / ML & Predictive Analytics' },
+      { name:'Sashi Kumar',        role:'Worker Health & Medical Safety' },
       { name:'Isabella Gbefa',     role:'Sustainability & ESG Framework' },
-      { name:'Shania Clauren',     role:'Worker Safety & Health Systems' },
-      { name:'Ahmed',              role:'Data Integration & Sensor Networks' },
+      { name:'Shania Clauren',     role:'Finance & Business Value' },
+      { name:'Ahmed',              role:'Data Analytics & AI/ML' },
     ],
   },
 
-  // ── 03 · Challenge (real sources) ─────────────────────────────────────
+  // ── 03 · Mining Challenge (real sources) ──────────────────────────────
   {
     id:2, type:'content',
     title:'Mining Safety & Sustainability Challenge',
@@ -353,9 +354,9 @@ export const presentationSlides = [
     content:[
       'Mining employs <1% of the global workforce yet contributes a disproportionate share of fatal work accidents (ILO, 2023)',
       'ICMM member companies recorded 36 fatalities in 2023 — mobile equipment and structural failures are leading causes',
-      'Globally an estimated 5,000+ miners die each year, with small-scale mines up to 90× more fatal than industrial operations (ILO)',
+      'Globally an estimated 5,000+ miners die each year; small-scale mines are up to 90× more fatal than industrial operations',
       'Environmental incidents cost the sector $6B+ annually in fines, remediation, and reputational damage',
-      'ESG disclosure is now mandatory in 60+ jurisdictions; Deloitte ranks digital transformation as the #1 mining trend for 2024',
+      'Deloitte ranks digital transformation as the #1 mining trend for 2024; ESG disclosure mandatory in 60+ jurisdictions',
     ],
     stat:{ value:'5,000+', label:'Estimated mining fatalities / year (ILO)' },
     icon:'⛏️',
@@ -389,10 +390,10 @@ export const presentationSlides = [
     subtitle:'Five autonomous agents — one unified safety intelligence',
     content:[
       'Yes — this system uses AI Agents: goal-driven programs that perceive, reason, and act without continuous human input',
-      'Each agent monitors its domain in real time, generates predictions with confidence scores, and triggers action workflows',
+      'Each agent monitors its domain, generates predictions with confidence scores, and triggers action workflows',
       'Agents collaborate: a gas spike from Agent 1 automatically informs Agent 5 to pre-calculate evacuation routes',
-      'Every decision is explainable: the dashboard shows reading, status, confidence %, and recommended action',
-      'All 5 agent domains are live in the dashboard — trigger any of the 8 simulation scenarios to see them respond',
+      'Every decision is explainable — the dashboard shows reading, status, confidence %, and recommended action',
+      'All 5 agents are live in the dashboard — trigger any simulation scenario to see them respond',
     ],
     stat:{ value:'5', label:'Autonomous AI Agents operating across the mine' },
     icon:'🤖',
@@ -419,92 +420,172 @@ export const presentationSlides = [
     ],
   },
 
-  // ── 06 · Command Center ────────────────────────────────────────────────
+  // ── 06 · Command Center Overview (live dashboard) ─────────────────────
   {
-    id:5, type:'content',
-    title:'Real-Time Safety Command Center',
+    id:5, type:'dashboard',
+    title:'Command Center Overview',
     subtitle:'Every alert. Every worker. Every risk. One screen.',
     content:[
-      'AI-generated aerial mine map with live overlays: drones, workers, risk zones, sensor readings',
-      'Triaged alert panel: AI assigns severity, zone, and recommended action within < 1 second',
-      'Worker health dashboard — 247 wearables monitored continuously across 9 operational zones',
-      'Equipment telemetry — 8 heavy machines, predictive maintenance flagging always active',
+      'AI-generated aerial mine map with live overlays — drones, workers, risk zones, sensor readings',
+      'Triaged alert panel: AI assigns severity, zone, and recommended action in < 1 second',
+      '8 real-time KPIs: workers, drones, sensors, critical alerts, risk score, fatigue, PPE, evacuation',
       'Scenario simulation: trigger Gas Leak, Heat Stress, Slope Crack, Vehicle Proximity, or Sustainability Risk',
     ],
     stat:{ value:'< 30s', label:'Alert-to-response latency' },
     icon:'🖥️',
+    route:'/overview', routeLabel:'Open Command Center',
   },
 
-  // ── 07 · Worker Health ─────────────────────────────────────────────────
+  // ── 07 · Drone Monitoring (live dashboard) ────────────────────────────
   {
-    id:6, type:'content',
-    title:'Worker Health & Incident Prevention',
-    subtitle:'No worker left behind',
+    id:6, type:'dashboard',
+    title:'Drone Monitoring',
+    subtitle:'Aerial surveillance and slope crack detection in real time',
     content:[
-      'Every worker wears a smart safety device tracking 6 health parameters continuously',
-      'AI fatigue model detects heat stress risk 30 minutes before it becomes critical',
-      'Fall and immobility detection triggers rescue dispatch within 60 seconds',
-      'PPE compliance AI via CCTV — eliminates manual spot-checking across all 9 zones',
-      'Result: 47 consecutive incident-free days — best record in this site\'s history',
+      '6 autonomous drones (Eagle-1 to Eagle-6) with live telemetry: battery, altitude, speed, zone',
+      'Eagle-2 currently monitoring north slope crack — confidence 84%, second drone dispatched for confirmation',
+      'Thermal imaging for hotspot and gas cloud detection across all pit faces',
+      'AI path planning optimises coverage across all 9 operational zones simultaneously',
     ],
-    stat:{ value:'47', label:'Consecutive incident-free days' },
+    stat:{ value:'6', label:'Drones active in flight' },
+    icon:'🚁',
+    route:'/drone-monitoring', routeLabel:'Open Drone Monitoring',
+  },
+
+  // ── 08 · Ground Sensors (live dashboard) ──────────────────────────────
+  {
+    id:7, type:'dashboard',
+    title:'Ground Sensor Network',
+    subtitle:'89 sensors — gas, dust, temperature, vibration across 9 zones',
+    content:[
+      '89 sensors monitoring CH₄, CO, H₂S, SO₂, PM₂.₅, PM₁₀, temperature, humidity, and vibration',
+      'GS-11: CH₄ 8.4 ppm at Fuel Zone 8 — AI predicts threshold breach within 2 hours',
+      'GS-08: PM₂.₅ 58.4 µg/m³ — approaching environmental regulatory limit',
+      'Zone-level heatmap with live readings; configurable alert thresholds per sensor type',
+    ],
+    stat:{ value:'89', label:'Ground sensors online' },
+    icon:'📡',
+    route:'/ground-sensors', routeLabel:'Open Ground Sensors',
+  },
+
+  // ── 09 · Worker Health (live dashboard) ───────────────────────────────
+  {
+    id:8, type:'dashboard',
+    title:'Worker Health & Safety',
+    subtitle:'247 wearables · every worker monitored continuously',
+    content:[
+      '247 workers monitored across 9 zones: heart rate, SpO₂, body temp, fatigue score, fall detection',
+      'W004: heat stress risk — fatigue 78, HR 128 bpm; intervention recommended within 15 minutes',
+      'W010: fall detected — no movement for 90 seconds; rescue team dispatched with live GPS routing',
+      '47 consecutive incident-free days — best performance in this site\'s recorded history',
+    ],
+    stat:{ value:'247', label:'Workers monitored in real time' },
     icon:'❤️',
+    route:'/worker-health', routeLabel:'Open Worker Health',
   },
 
-  // ── 08 · Sustainability ────────────────────────────────────────────────
+  // ── 10 · Equipment Safety (live dashboard) ────────────────────────────
   {
-    id:7, type:'content',
-    title:'Sustainability Intelligence',
-    subtitle:'AI safety systems are sustainability systems',
+    id:9, type:'dashboard',
+    title:'Equipment Safety',
+    subtitle:'8 heavy machines — predictive maintenance active',
     content:[
-      'Carbon intensity: 18.4 kg CO₂e/t — down 4.2 % YoY via AI route and process optimisation',
-      'Water recycling: 76 % — AI identifies processing bottlenecks to push toward 85 % target',
-      'Land rehabilitation: 64 % complete — drone monitoring tracks revegetation progress weekly',
-      'Tailings risk: Low — AI seepage sensors + ML model provides early warning 30 days ahead',
-      'SDG 3, 8, 9, 12, 13, 15 and 16 actively tracked and reported for investor-grade ESG disclosure',
+      '8 machines: ZX870 excavators, HD785 haul trucks, A60H articulated dumpers tracked 24/7',
+      'EQ08: engine temp 103 °C — critical alert; failure predicted within 10 hours without intervention',
+      'Predictive maintenance ML models forecast failures 24–72 hours ahead using engine and vibration data',
+      'Proximity alerts warn operators when vehicles approach worker exclusion zones',
     ],
-    stat:{ value:'87%', label:'ESG Compliance Readiness Score' },
-    icon:'🌿',
+    stat:{ value:'8', label:'Heavy machines monitored' },
+    icon:'⚙️',
+    route:'/equipment-safety', routeLabel:'Open Equipment Safety',
   },
 
-  // ── 09 · Incident Response ─────────────────────────────────────────────
+  // ── 11 · Fleet Management (live dashboard) ────────────────────────────
   {
-    id:8, type:'content',
+    id:10, type:'dashboard',
+    title:'Fleet Management',
+    subtitle:'Real-time vehicle tracking and route optimisation',
+    content:[
+      'Live GPS tracking of all vehicles: position, speed, heading, and zone assignment',
+      'Operator licence and safety training compliance — expiry alerts sent 90 days in advance',
+      'AI-optimised haul routes reduce fuel consumption by 12% and cut idle time by 18%',
+      'Proximity alert system: vehicle-to-vehicle and vehicle-to-worker collision prevention',
+    ],
+    stat:{ value:'12%', label:'Fuel savings via AI route optimisation' },
+    icon:'🚛',
+    route:'/fleet-management', routeLabel:'Open Fleet Management',
+  },
+
+  // ── 12 · AI Prediction Engine (live dashboard) ────────────────────────
+  {
+    id:11, type:'dashboard',
+    title:'AI Prediction Engine',
+    subtitle:'Detect risk before it becomes an incident',
+    content:[
+      'ML models for gas accumulation, equipment failure, worker fatigue, and slope stability',
+      'Each prediction shows confidence score, time-to-event, and top contributing sensor factors',
+      'Explainable AI: every recommendation includes the reasoning chain — no black box decisions',
+      'Models retrain continuously from live data; accuracy tracked per model over time',
+    ],
+    stat:{ value:'89%', label:'Maximum prediction confidence (Gas Safety Model)' },
+    icon:'🧠',
+    route:'/ai-prediction', routeLabel:'Open AI Prediction Engine',
+  },
+
+  // ── 13 · Incident Response (live dashboard) ───────────────────────────
+  {
+    id:12, type:'dashboard',
     title:'Incident & Environmental Response',
     subtitle:'From detection to resolution in minutes',
     content:[
       'Automated incident workflow: Alert → Verify → Assign → Escalate → Resolve → Review',
-      'Evacuation route AI: calculates safest path in real time based on active hazards and zone status',
+      'AI evacuation route planner: calculates safest path in real time based on active hazards',
       'Rescue team dispatch: GPS-tracked responders reach any zone within 8 minutes',
-      'Environmental response: automatic regulatory notification triggered on threshold breach',
-      'Full audit trail: every AI decision logged with timestamp for post-incident review and compliance',
+      'Full audit trail — every AI decision logged with timestamp for post-incident compliance review',
     ],
     stat:{ value:'< 8 min', label:'Rescue team response time' },
     icon:'🚨',
+    route:'/incident-response', routeLabel:'Open Incident Response',
   },
 
-  // ── 10 · Business Value ────────────────────────────────────────────────
+  // ── 14 · Sustainability (live dashboard) ──────────────────────────────
   {
-    id:9, type:'content',
+    id:13, type:'dashboard',
+    title:'Sustainability Intelligence',
+    subtitle:'AI safety systems are sustainability systems',
+    content:[
+      'Carbon intensity 18.4 kg CO₂e/t — down 4.2% YoY via AI route and process optimisation',
+      'Water recycling 76% — AI identifies processing bottlenecks pushing toward 85% target',
+      'Land rehabilitation 64% complete — drone monitoring tracks revegetation progress weekly',
+      'SDG 3, 8, 9, 12, 13, 15 and 16 actively tracked; ESG readiness score 87%',
+    ],
+    stat:{ value:'87%', label:'ESG Compliance Readiness Score' },
+    icon:'🌿',
+    route:'/sustainability', routeLabel:'Open Sustainability Dashboard',
+  },
+
+  // ── 15 · Business Value ────────────────────────────────────────────────
+  {
+    id:14, type:'content',
     title:'Business Value Summary',
     subtitle:'Safer workers. Lower impact. Better governance.',
     content:[
-      '34 % reduction in safety incidents year-on-year across all monitored zones',
-      '12 % reduction in fleet fuel consumption via AI-optimised haul routes',
+      '34% reduction in safety incidents year-on-year across all monitored zones',
+      '12% reduction in fleet fuel consumption via AI-optimised haul routes',
       '280 kWh saved per night via smart ventilation scheduling in underground zones',
-      '$2.4 M estimated annual savings from predictive maintenance alone',
-      'ESG readiness score of 87 % — enabling investor-grade sustainability disclosure',
+      '$2.4M estimated annual savings from predictive maintenance alone',
+      'ESG readiness score of 87% — enabling investor-grade sustainability disclosure',
     ],
     stat:{ value:'$2.4M', label:'Estimated annual savings — predictive maintenance' },
     icon:'📊',
   },
 
-  // ── 11 · Thank You ─────────────────────────────────────────────────────
+  // ── 16 · Thank You ─────────────────────────────────────────────────────
   {
-    id:10, type:'thankyou',
+    id:15, type:'thankyou',
     title:'Thank You',
     subtitle:'Harbin Institute of Technology, Shenzhen',
-    institution:'HITSZ — AI for Sustainable Development · 2025',
+    institution:'HITSZ — AI for Sustainable Development · 2026',
     icon:'🎓',
     members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed'],
   },
