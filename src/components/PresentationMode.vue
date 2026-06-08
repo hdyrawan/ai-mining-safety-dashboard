@@ -23,21 +23,39 @@ function onKey(e) {
 onMounted(() => { document.addEventListener('keydown', onKey) })
 onUnmounted(() => { document.removeEventListener('keydown', onKey) })
 
-const severityBgMap = [
-  '#ef444410', '#3b82f610', '#06b6d410', '#14b8a610',
-  '#f59e0b10', '#10b98110', '#ef444410', '#6366f110',
-]
+const accentColor = computed(() => {
+  const s = slide.value
+  if (s.type === 'thankyou') return '#10b981'
+  if (s.icon === '🌿') return '#10b981'
+  if (s.icon === '🚨') return '#ef4444'
+  if (s.icon === '❤️') return '#ef4444'
+  return '#3b82f6'
+})
+
+const stageBg = computed(() => {
+  const s = slide.value
+  if (s.type === 'title') return 'radial-gradient(ellipse at 60% 40%, #1e3a5f 0%, #0b0e1a 70%)'
+  if (s.type === 'team') return 'linear-gradient(135deg, #0f1a2e 0%, #0b0e1a 100%)'
+  if (s.type === 'agents') return 'linear-gradient(135deg, #0f1a2e 0%, #0b0e1a 100%)'
+  if (s.type === 'thankyou') return 'radial-gradient(ellipse at 50% 50%, #0d2318 0%, #0b0e1a 70%)'
+  if (s.icon === '🌿') return '#10b98108'
+  if (s.icon === '🚨') return '#ef444408'
+  if (s.icon === '❤️') return '#ef444408'
+  return '#3b82f608'
+})
+
+const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e' }
 </script>
 
 <template>
-  <div class="pres-wrapper" :style="{ '--slide-accent': slide.icon === '🌿' ? '#10b981' : slide.icon === '🚨' ? '#ef4444' : '#3b82f6' }">
-    <!-- Header bar -->
+  <div class="pres-wrapper" :style="{ '--slide-accent': accentColor }">
+
+    <!-- Top bar -->
     <div class="pres-topbar">
-      <div class="pres-brand">⛏️ AI Mining Safety &amp; Sustainability</div>
+      <div class="pres-brand">⛏️ MineSafe AI System — HITSZ 2025</div>
       <div class="pres-progress-dots">
         <span
-          v-for="(s, i) in presentationSlides"
-          :key="i"
+          v-for="(s, i) in presentationSlides" :key="i"
           :class="['pres-dot', { active: i === current, done: i < current }]"
           @click="goTo(i)"
         ></span>
@@ -48,22 +66,109 @@ const severityBgMap = [
       </div>
     </div>
 
-    <!-- Main slide -->
-    <div class="pres-stage" :style="{ background: severityBgMap[current] }">
+    <!-- Stage -->
+    <div class="pres-stage" :style="{ background: stageBg }">
       <transition name="slide-fade" mode="out-in">
-        <div :key="current" class="pres-slide animate-fade-in">
-          <div class="pres-slide-inner">
+        <div :key="current" class="pres-slide">
+
+          <!-- ── TITLE slide ─────────────────────────────────────── -->
+          <div v-if="slide.type === 'title'" class="slide-center-wrap">
+            <div class="title-eyebrow">AI for Sustainable Development</div>
+            <div class="title-icon">{{ slide.icon }}</div>
+            <h1 class="title-main">{{ slide.title }}</h1>
+            <p class="title-sub">{{ slide.subtitle }}</p>
+            <div class="title-divider"></div>
+            <p class="title-institution">{{ slide.institution }}</p>
+            <div class="title-team-row">
+              <span v-for="m in slide.members" :key="m" class="title-member">{{ m }}</span>
+            </div>
+            <div class="title-year">{{ slide.year }}</div>
+          </div>
+
+          <!-- ── TEAM slide ──────────────────────────────────────── -->
+          <div v-else-if="slide.type === 'team'" class="slide-full-wrap">
+            <div class="team-header">
+              <div class="pres-slide-number">{{ String(current + 1).padStart(2, '0') }}</div>
+              <h1 class="pres-title">{{ slide.title }}</h1>
+              <p class="pres-subtitle">{{ slide.subtitle }}</p>
+            </div>
+            <div class="team-grid">
+              <div v-for="m in slide.members" :key="m.name" class="team-card">
+                <div class="team-avatar">{{ m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
+                <div class="team-name">{{ m.name }}</div>
+                <div class="team-role">{{ m.role }}</div>
+              </div>
+            </div>
+            <div class="team-footer">HITSZ — Harbin Institute of Technology, Shenzhen</div>
+          </div>
+
+          <!-- ── AGENTS slide ────────────────────────────────────── -->
+          <div v-else-if="slide.type === 'agents'" class="slide-agents-wrap">
+            <div class="agents-left">
+              <div class="pres-slide-number">{{ String(current + 1).padStart(2, '0') }}</div>
+              <div class="pres-slide-icon">{{ slide.icon }}</div>
+              <h1 class="pres-title">{{ slide.title }}</h1>
+              <p class="pres-subtitle">{{ slide.subtitle }}</p>
+              <ul class="pres-content-list">
+                <li v-for="(item, i) in slide.content" :key="i" :style="{ animationDelay: (i * 0.07) + 's' }">{{ item }}</li>
+              </ul>
+              <div class="pres-stat-card" style="margin-top:16px">
+                <div class="pres-stat-value">{{ slide.stat.value }}</div>
+                <div class="pres-stat-label">{{ slide.stat.label }}</div>
+              </div>
+              <div v-if="slide.sources" class="sources-block">
+                <div class="sources-label">Sources</div>
+                <div v-for="src in slide.sources" :key="src.label" class="source-item">
+                  ↗ {{ src.label }} ({{ src.year }})
+                </div>
+              </div>
+            </div>
+            <div class="agents-right">
+              <div class="agents-title-label">Live Agent Activations in Dashboard</div>
+              <div
+                v-for="ag in slide.agents" :key="ag.name"
+                class="agent-card"
+                :style="{ borderLeftColor: statusColor[ag.status] }"
+              >
+                <div class="agent-icon">{{ ag.icon }}</div>
+                <div class="agent-body">
+                  <div class="agent-name" :style="{ color: statusColor[ag.status] }">{{ ag.name }}</div>
+                  <div class="agent-case">{{ ag.case }}</div>
+                </div>
+                <div class="agent-status-dot" :style="{ background: statusColor[ag.status] }"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── THANK YOU slide ─────────────────────────────────── -->
+          <div v-else-if="slide.type === 'thankyou'" class="slide-center-wrap ty-wrap">
+            <div class="ty-icon">{{ slide.icon }}</div>
+            <h1 class="ty-title">{{ slide.title }}</h1>
+            <div class="ty-institution">{{ slide.institution }}</div>
+            <div class="title-divider" style="border-color:#10b981; max-width:200px"></div>
+            <div class="ty-subtitle">{{ slide.subtitle }}</div>
+            <div class="ty-team">
+              <span v-for="m in slide.members" :key="m" class="ty-member">{{ m }}</span>
+            </div>
+            <div class="ty-project">MineSafe AI System · AI-Driven Mining Safety &amp; Sustainability</div>
+          </div>
+
+          <!-- ── CONTENT slide (default) ────────────────────────── -->
+          <div v-else class="pres-slide-inner">
             <div class="pres-slide-left">
               <div class="pres-slide-number">{{ String(current + 1).padStart(2, '0') }}</div>
               <div class="pres-slide-icon">{{ slide.icon }}</div>
               <h1 class="pres-title">{{ slide.title }}</h1>
               <p class="pres-subtitle">{{ slide.subtitle }}</p>
-
               <ul class="pres-content-list">
-                <li v-for="(item, i) in slide.content" :key="i" :style="{ animationDelay: (i * 0.08) + 's' }">
-                  {{ item }}
-                </li>
+                <li v-for="(item, i) in slide.content" :key="i" :style="{ animationDelay: (i * 0.08) + 's' }">{{ item }}</li>
               </ul>
+              <div v-if="slide.sources" class="sources-block">
+                <div class="sources-label">Sources</div>
+                <div v-for="src in slide.sources" :key="src.label" class="source-item">
+                  ↗ {{ src.label }} ({{ src.year }})
+                </div>
+              </div>
             </div>
 
             <div class="pres-slide-right">
@@ -72,31 +177,22 @@ const severityBgMap = [
                 <div class="pres-stat-label">{{ slide.stat.label }}</div>
               </div>
 
-              <!-- Slide-specific visual -->
+              <!-- Per-icon visual -->
               <div class="pres-visual">
-                <template v-if="slide.id === 1">
+                <template v-if="slide.icon === '⛏️'">
                   <div class="pres-fact-grid">
-                    <div class="pres-fact"><span>⛏️</span><span>5,000+</span><span>Mining fatalities / year</span></div>
+                    <div class="pres-fact"><span>⛏️</span><span>5,000+</span><span>Mining fatalities / year (ILO)</span></div>
+                    <div class="pres-fact"><span>📋</span><span>36</span><span>ICMM member fatalities 2023</span></div>
                     <div class="pres-fact"><span>💰</span><span>$6B+</span><span>Annual environmental fines</span></div>
-                    <div class="pres-fact"><span>📋</span><span>60+</span><span>Jurisdictions require ESG reporting</span></div>
-                    <div class="pres-fact"><span>🌍</span><span>85%</span><span>Accidents are preventable</span></div>
+                    <div class="pres-fact"><span>🌍</span><span>60+</span><span>Jurisdictions require ESG reporting</span></div>
                   </div>
                 </template>
-                <template v-else-if="slide.id === 2">
+                <template v-else-if="slide.icon === '📡'">
                   <div class="pres-data-sources">
-                    <div v-for="s in ['🚁 6 Drones', '📡 89 Sensors', '⌚ 247 Wearables', '📷 CCTV + CV', '🚛 Equipment Telemetry', '🛰️ GPS Tracking']" :key="s" class="pres-ds-item">{{ s }}</div>
+                    <div v-for="s in ['🚁 6 Drones', '📡 89 Sensors', '⌚ 247 Wearables', '📷 CCTV + CV', '🚛 8 Machines', '🛰️ GPS Tracking']" :key="s" class="pres-ds-item">{{ s }}</div>
                   </div>
                 </template>
-                <template v-else-if="slide.id === 3">
-                  <div class="pres-ai-layers">
-                    <div class="pres-ai-layer detect">🔍 DETECT<span>Real-time anomaly detection &lt;1s</span></div>
-                    <div class="pres-ai-arrow">↓</div>
-                    <div class="pres-ai-layer predict">🧠 PREDICT<span>ML forecast 2-48h ahead</span></div>
-                    <div class="pres-ai-arrow">↓</div>
-                    <div class="pres-ai-layer recommend">💡 RECOMMEND<span>Explainable, actionable AI</span></div>
-                  </div>
-                </template>
-                <template v-else-if="slide.id === 6">
+                <template v-else-if="slide.icon === '🌿'">
                   <div class="pres-sdg-mini">
                     <div v-for="n in [3,8,9,12,13,15,16]" :key="n" class="sdg-mini-badge">SDG {{ n }}</div>
                   </div>
@@ -112,21 +208,18 @@ const severityBgMap = [
               <div class="pres-nav-hint">← → to navigate · Esc to exit</div>
             </div>
           </div>
+
         </div>
       </transition>
     </div>
 
-    <!-- Bottom nav -->
+    <!-- Bottom bar -->
     <div class="pres-bottombar">
-      <button class="pres-nav-btn" :disabled="current === 0" @click="prev">
-        ← Previous
-      </button>
+      <button class="pres-nav-btn" :disabled="current === 0" @click="prev">← Previous</button>
       <div class="pres-progress-bar">
         <div class="pres-progress-fill" :style="{ width: ((current + 1) / total * 100) + '%' }"></div>
       </div>
-      <button class="pres-nav-btn primary" :disabled="current === total - 1" @click="next">
-        Next →
-      </button>
+      <button class="pres-nav-btn primary" :disabled="current === total - 1" @click="next">Next →</button>
     </div>
   </div>
 </template>
@@ -153,7 +246,7 @@ const severityBgMap = [
   flex-shrink: 0;
 }
 .pres-brand { font-size: 0.9rem; font-weight: 700; color: var(--text-secondary); }
-.pres-progress-dots { display: flex; gap: 8px; align-items: center; }
+.pres-progress-dots { display: flex; gap: 6px; align-items: center; }
 .pres-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
@@ -162,7 +255,7 @@ const severityBgMap = [
   transition: all var(--transition-fast);
 }
 .pres-dot.done   { background: var(--accent-blue); opacity: 0.5; }
-.pres-dot.active { background: var(--accent-blue); transform: scale(1.4); }
+.pres-dot.active { background: var(--slide-accent, var(--accent-blue)); transform: scale(1.5); }
 .pres-topbar-right { display: flex; align-items: center; gap: 12px; }
 .pres-slide-count { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); }
 .pres-exit-btn {
@@ -184,48 +277,37 @@ const severityBgMap = [
   padding: 24px 32px;
   transition: background 0.4s ease;
 }
-.pres-slide { height: 100%; display: flex; align-items: center; }
-.pres-slide-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  height: 100%;
-  align-items: center;
-}
+.pres-slide { height: 100%; display: flex; align-items: stretch; }
 
-/* ── Left column ── */
-.pres-slide-left {}
+/* ── Shared typography ── */
 .pres-slide-number {
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: 800;
   color: var(--border-card);
   font-family: var(--font-mono);
   line-height: 1;
-  margin-bottom: -8px;
+  margin-bottom: -4px;
 }
-.pres-slide-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.pres-slide-icon { font-size: 2.2rem; margin-bottom: 8px; }
 .pres-title {
-  font-size: 2rem;
+  font-size: 1.9rem;
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.5px;
-  line-height: 1.2;
-  margin-bottom: 8px;
+  letter-spacing: -0.4px;
+  line-height: 1.15;
+  margin-bottom: 6px;
 }
 .pres-subtitle {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   font-style: italic;
 }
-.pres-content-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.pres-content-list { list-style: none; display: flex; flex-direction: column; gap: 7px; padding: 0; margin: 0; }
 .pres-content-list li {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  padding-left: 18px;
+  padding-left: 16px;
   position: relative;
   line-height: 1.5;
   animation: fade-in 0.4s ease forwards;
@@ -237,19 +319,18 @@ const severityBgMap = [
   color: var(--slide-accent, var(--accent-blue));
 }
 
-/* ── Right column ── */
-.pres-slide-right { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+/* ── Stat card ── */
 .pres-stat-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-xl);
-  padding: 24px 32px;
+  padding: 20px 28px;
   text-align: center;
   width: 100%;
   border-top: 4px solid var(--slide-accent, var(--accent-blue));
 }
 .pres-stat-value {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 800;
   font-family: var(--font-mono);
   color: var(--slide-accent, var(--accent-blue));
@@ -257,10 +338,261 @@ const severityBgMap = [
   line-height: 1;
 }
 .pres-stat-label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
   margin-top: 6px;
 }
+
+/* ── Sources block ── */
+.sources-block { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-base); }
+.sources-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 4px; }
+.source-item {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TITLE slide
+───────────────────────────────────────────────────────────── */
+.slide-center-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0;
+}
+.title-eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-blue);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.title-icon { font-size: 4rem; margin-bottom: 10px; }
+.title-main {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+.title-sub {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+.title-divider {
+  border: none;
+  border-top: 2px solid var(--accent-blue);
+  width: 80px;
+  margin: 4px auto 18px;
+}
+.title-institution {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+.title-team-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.title-member {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.title-year {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TEAM slide
+───────────────────────────────────────────────────────────── */
+.slide-full-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+}
+.team-header { text-align: center; margin-bottom: 24px; }
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 1100px;
+}
+.team-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  border-top: 3px solid var(--accent-blue);
+  transition: border-color var(--transition-fast);
+}
+.team-card:hover { border-top-color: var(--slide-accent, var(--accent-blue)); }
+.team-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-blue), #6366f1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+}
+.team-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.team-role {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.team-footer {
+  margin-top: 20px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   AGENTS slide
+───────────────────────────────────────────────────────────── */
+.slide-agents-wrap {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 40px;
+  align-items: start;
+  overflow: auto;
+}
+.agents-left { display: flex; flex-direction: column; gap: 0; }
+.agents-right { display: flex; flex-direction: column; gap: 10px; height: 100%; overflow: auto; }
+.agents-title-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.agent-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-left: 4px solid var(--status-ok);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.agent-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 1px; }
+.agent-body { flex: 1; min-width: 0; }
+.agent-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 3px; }
+.agent-case { font-size: 0.73rem; color: var(--text-muted); line-height: 1.4; }
+.agent-status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   THANK YOU slide
+───────────────────────────────────────────────────────────── */
+.ty-wrap { gap: 6px; }
+.ty-icon { font-size: 4.5rem; margin-bottom: 4px; }
+.ty-title {
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -2px;
+  margin-bottom: 6px;
+}
+.ty-institution {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #10b981;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.ty-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.ty-team {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.ty-member {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 5px 14px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.ty-project {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   CONTENT slide two-column layout
+───────────────────────────────────────────────────────────── */
+.pres-slide-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
+  align-items: center;
+}
+.pres-slide-left { display: flex; flex-direction: column; }
+.pres-slide-right { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
 
 .pres-visual { width: 100%; }
 .pres-fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -277,7 +609,7 @@ const severityBgMap = [
 }
 .pres-fact span:nth-child(1) { font-size: 1.2rem; }
 .pres-fact span:nth-child(2) { font-size: 1.3rem; font-weight: 800; color: var(--text-primary); font-family: var(--font-mono); }
-.pres-fact span:nth-child(3) { color: var(--text-muted); text-align: center; font-size: 0.7rem; }
+.pres-fact span:nth-child(3) { color: var(--text-muted); text-align: center; font-size: 0.68rem; }
 
 .pres-data-sources { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .pres-ds-item {
@@ -289,26 +621,6 @@ const severityBgMap = [
   font-weight: 600;
   color: var(--text-primary);
 }
-
-.pres-ai-layers { display: flex; flex-direction: column; align-items: center; gap: 0; }
-.pres-ai-layer {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-card);
-  border-radius: var(--radius-md);
-  padding: 12px 18px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.pres-ai-layer span { font-weight: 400; color: var(--text-muted); font-size: 0.75rem; }
-.pres-ai-layer.detect   { border-color: var(--status-crit-border); }
-.pres-ai-layer.predict  { border-color: var(--status-warn-border); }
-.pres-ai-layer.recommend{ border-color: var(--status-ok-border); }
-.pres-ai-arrow { font-size: 1.2rem; color: var(--text-dim); }
 
 .pres-sdg-mini { display: flex; flex-wrap: wrap; gap: 8px; }
 .sdg-mini-badge {
@@ -367,7 +679,7 @@ const severityBgMap = [
 .pres-nav-btn.primary { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 .pres-nav-btn.primary:hover:not(:disabled) { background: #2563eb; }
 .pres-progress-bar { flex: 1; height: 4px; background: var(--border-base); border-radius: 2px; overflow: hidden; }
-.pres-progress-fill { height: 100%; background: var(--accent-blue); border-radius: 2px; transition: width 0.4s ease; }
+.pres-progress-fill { height: 100%; background: var(--slide-accent, var(--accent-blue)); border-radius: 2px; transition: width 0.4s ease; }
 
 /* ── Transition ── */
 .slide-fade-enter-active { transition: all 0.3s ease; }
