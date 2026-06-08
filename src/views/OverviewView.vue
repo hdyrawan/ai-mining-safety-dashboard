@@ -128,14 +128,26 @@ const topPredictions = aiPredictions.slice(0, 2)
 
 .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
 
-.main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
-.map-col { min-height: 360px; }
-.alerts-col { display: flex; flex-direction: column; overflow: hidden; max-height: 480px; }
+.main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; align-items: start; }
+.map-col {
+  height: calc(100vh - 290px);
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+}
+.alerts-col {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: calc(100vh - 290px);
+  min-height: 560px;
+}
 
 @media (max-width: 900px) {
   .kpi-grid   { grid-template-columns: repeat(2, 1fr); }
   .main-grid  { grid-template-columns: 1fr; }
-  .alerts-col { max-height: 320px; }
+  .map-col    { height: auto; min-height: 480px; }
+  .alerts-col { height: auto; min-height: 340px; max-height: 400px; }
   .page-header { flex-direction: column; gap: 8px; }
 }
 @media (max-width: 600px) {
@@ -161,7 +173,8 @@ const topPredictions = aiPredictions.slice(0, 2)
 @media (max-width: 1200px) {
   .kpi-grid { grid-template-columns: repeat(4, 1fr); }
   .main-grid { grid-template-columns: 1fr; }
-  .alerts-col { max-height: 300px; }
+  .map-col    { height: auto; min-height: 520px; }
+  .alerts-col { height: auto; min-height: 340px; max-height: 400px; }
 }
 @media (max-width: 800px) {
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
