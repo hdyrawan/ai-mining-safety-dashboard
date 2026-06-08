@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { gasSensors, trendData } from '../data/mockData.js'
+import { gasSensors, trendData, dustAirSensors } from '../data/mockData.js'
 import SensorGrid from '../components/SensorGrid.vue'
 import TrendChart from '../components/TrendChart.vue'
 import StatusBadge from '../components/StatusBadge.vue'
@@ -109,6 +109,102 @@ const aiWarnings = [
         </table>
       </div>
     </div>
+
+    <!-- ── Dust & Air Quality Monitoring ───────────────────────────────────── -->
+    <div class="section-divider">
+      <span class="section-label">💨 DUST &amp; AIR QUALITY MONITORING</span>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:16px">
+      <TrendChart
+        title="Dust Concentration Trend — Today"
+        :labels="trendData.dustAirTrend.labels"
+        :series="trendData.dustAirTrend.series"
+        type="line"
+        :height="200"
+      />
+      <div class="card">
+        <div class="card-header"><span class="card-title">🤖 AI Dust Control Recommendations</span></div>
+        <div class="card-body dust-rec-list">
+          <div class="dust-rec crit">
+            <span class="dr-zone">Blast Zone B</span>
+            PM₁₀ at 145 μg/m³ — critical. Delay blasting operations, activate emergency dust suppression and restrict zone access.
+          </div>
+          <div class="dust-rec warn">
+            <span class="dr-zone">Processing / Crusher</span>
+            PM₂.₅ trending up (58 μg/m³). Activate automated water sprays on conveyor belts. Target: reduce 35% within 2h.
+          </div>
+          <div class="dust-rec warn">
+            <span class="dr-zone">Workshop Bay</span>
+            NO₂ elevated (31.6 ppm) from diesel engines. Improve bay ventilation and limit simultaneous engine starts.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">
+        <span class="card-title">🌬️ Site Air Quality — Real-Time Monitor</span>
+        <span class="card-sub">PM₂.₅ · PM₁₀ · NO₂ · VOC · Temperature · Wind</span>
+      </div>
+      <div class="card-body">
+        <div class="air-grid">
+          <div v-for="d in dustAirSensors" :key="d.id" :class="['air-card', d.status]">
+            <div class="air-location">{{ d.location }}</div>
+            <div class="air-readings">
+              <div class="air-reading">
+                <span class="ar-label">PM₂.₅</span>
+                <span class="ar-val" :style="{ color: d.pm25 >= 100 ? 'var(--status-crit)' : d.pm25 >= 50 ? 'var(--status-warn)' : 'var(--status-ok)' }">{{ d.pm25 }}</span>
+                <span class="ar-unit">μg/m³</span>
+              </div>
+              <div class="air-reading">
+                <span class="ar-label">PM₁₀</span>
+                <span class="ar-val" :style="{ color: d.pm10 >= 150 ? 'var(--status-crit)' : d.pm10 >= 80 ? 'var(--status-warn)' : 'var(--status-ok)' }">{{ d.pm10 }}</span>
+                <span class="ar-unit">μg/m³</span>
+              </div>
+              <div class="air-reading">
+                <span class="ar-label">NO₂</span>
+                <span class="ar-val" :style="{ color: d.no2 >= 25 ? 'var(--status-warn)' : 'var(--text-secondary)' }">{{ d.no2 }}</span>
+                <span class="ar-unit">ppm</span>
+              </div>
+              <div class="air-reading">
+                <span class="ar-label">VOC</span>
+                <span class="ar-val" :style="{ color: d.voc >= 0.4 ? 'var(--status-warn)' : 'var(--text-secondary)' }">{{ d.voc }}</span>
+                <span class="ar-unit">mg/m³</span>
+              </div>
+            </div>
+            <div class="air-meta">
+              <span>{{ d.temp }}°C · {{ d.humidity }}% RH</span>
+              <span v-if="d.windDir !== '—'">💨 {{ d.windSpeed }} km/h {{ d.windDir }}</span>
+              <StatusBadge :status="d.status" size="sm" />
+              <span :class="['trend-icon', d.trend]">{{ d.trend === 'up' ? '↑' : d.trend === 'down' ? '↓' : '→' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">🫁 Respirable Dust Health Exposure</span></div>
+      <div class="card-body">
+        <table class="data-table">
+          <thead>
+            <tr><th>Zone / Location</th><th>8h TWA PM₂.₅</th><th>8h TWA PM₁₀</th><th>Exposure Level</th><th>Control Required</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="d in dustAirSensors" :key="d.id">
+              <td>{{ d.location }}</td>
+              <td class="mono" :style="{ color: d.pm25 >= 50 ? 'var(--status-warn)' : 'var(--text-secondary)' }">{{ d.pm25 }} μg/m³</td>
+              <td class="mono" :style="{ color: d.pm10 >= 80 ? 'var(--status-warn)' : 'var(--text-secondary)' }">{{ d.pm10 }} μg/m³</td>
+              <td><StatusBadge :status="d.status" size="sm" /></td>
+              <td class="small" :style="{ color: d.status === 'critical' ? 'var(--status-crit)' : d.status === 'warning' ? 'var(--status-warn)' : 'var(--text-muted)' }">
+                {{ d.status === 'critical' ? 'Immediate suppression + evacuation' : d.status === 'warning' ? 'Dust suppression + PPE upgrade' : 'Routine monitoring' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -141,4 +237,33 @@ const aiWarnings = [
 .sh-label { color:var(--text-muted); min-width:40px; }
 .sh-cal { color:var(--text-dim); font-size:0.65rem; margin-left:auto; }
 .sh-trend { font-weight:700; font-size:0.8rem; min-width:12px; }
+
+.section-divider { display:flex; align-items:center; gap:12px; margin:24px 0 14px; }
+.section-divider::before,.section-divider::after { content:''; flex:1; height:1px; background:var(--border-base); }
+.section-label { font-size:0.68rem; font-weight:700; color:var(--text-dim); letter-spacing:0.1em; white-space:nowrap; }
+
+.dust-rec-list { display:flex; flex-direction:column; gap:10px; }
+.dust-rec { background:var(--bg-secondary); border-radius:var(--radius-sm); padding:10px 12px; border-left:3px solid var(--border-base); font-size:0.75rem; color:var(--text-secondary); line-height:1.5; }
+.dust-rec.crit { border-left-color:var(--status-crit); }
+.dust-rec.warn { border-left-color:var(--status-warn); }
+.dr-zone { display:block; font-weight:700; font-size:0.78rem; color:var(--text-primary); margin-bottom:3px; }
+
+.air-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.air-card { background:var(--bg-secondary); border:1px solid var(--border-base); border-radius:var(--radius-sm); padding:12px; }
+.air-card.critical { border-color:var(--status-crit-border); background:rgba(239,68,68,0.04); }
+.air-card.warning  { border-color:var(--status-warn-border); background:rgba(245,158,11,0.03); }
+.air-location { font-size:0.73rem; font-weight:600; color:var(--text-primary); margin-bottom:8px; line-height:1.3; }
+.air-readings { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-bottom:8px; }
+.air-reading { display:flex; flex-direction:column; align-items:center; gap:1px; }
+.ar-label { font-size:0.6rem; color:var(--text-dim); font-weight:600; }
+.ar-val { font-family:var(--font-mono); font-size:0.85rem; font-weight:700; }
+.ar-unit { font-size:0.58rem; color:var(--text-dim); }
+.air-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.68rem; color:var(--text-muted); border-top:1px solid var(--border-base); padding-top:6px; }
+.trend-icon { font-weight:700; font-size:0.85rem; }
+.trend-icon.up { color:var(--status-crit); }
+.trend-icon.down { color:var(--status-ok); }
+.trend-icon.stable { color:var(--text-muted); }
+.small { font-size:0.72rem; }
+
+@media(max-width:900px) { .air-grid { grid-template-columns:1fr; } }
 </style>

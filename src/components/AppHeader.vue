@@ -18,7 +18,7 @@ function toggleSidebar() { store.toggleSidebar() }
       </button>
       <div class="header-icon">⛏️</div>
       <div class="header-info">
-        <div class="header-title">AI Mining Safety &amp; Sustainability Command Center</div>
+        <div class="header-title">MineSafe AI System</div>
         <div class="header-sub">Kalimantan Gold Mine · Real-Time AI Operations · Shift Day 06:00–18:00</div>
       </div>
     </div>

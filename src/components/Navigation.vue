@@ -13,6 +13,7 @@ const navItems = [
   { path:'/ground-sensors',     icon:'📡',  label:'Ground Sensors',          sub:'Gas & Environment' },
   { path:'/worker-health',      icon:'❤️',  label:'Worker Health',           sub:'Wearables & Safety' },
   { path:'/equipment-safety',   icon:'🚜',  label:'Equipment Safety',        sub:'Telemetry & Risk' },
+  { path:'/fleet-management',   icon:'🚛',  label:'Fleet Management',         sub:'Drivers & Compliance' },
   { path:'/ai-prediction',      icon:'🤖',  label:'AI Prediction',           sub:'Forecast & Insight' },
   { path:'/incident-response',  icon:'🚨',  label:'Incident Response',       sub:'Workflow & Dispatch' },
   { path:'/sustainability',     icon:'🌿',  label:'Sustainability Intel.',    sub:'SDG & ESG' },
@@ -41,13 +42,32 @@ function isActive(path) { return route.path === path || (path !== '/' && route.p
 
       <div class="divider" style="margin: 12px 12px;"></div>
       <div class="nav-section-label">SCENARIO SIM</div>
+
+      <!-- Active scenario status card -->
+      <div v-if="store.scenarioConfig" class="scenario-active-card" :class="store.scenarioConfig.severity">
+        <div class="sac-header">
+          <span class="sac-dot"></span>
+          <span class="sac-label">{{ store.scenarioConfig.label }}</span>
+          <span class="sac-live">LIVE</span>
+        </div>
+        <div class="sac-zone">{{ store.scenarioConfig.zone }}</div>
+        <div class="sac-steps">
+          <div v-for="(step, i) in store.scenarioConfig.steps" :key="i" class="sac-step">
+            <span class="step-dot"></span>{{ step }}
+          </div>
+        </div>
+        <button class="scenario-btn reset" @click="store.resetScenario()">↩ Reset Scenario</button>
+      </div>
+
       <div class="scenario-buttons">
         <button class="scenario-btn gas"      @click="store.triggerGasLeak()">💨 Gas Leak</button>
         <button class="scenario-btn heat"     @click="store.triggerHeatStress()">🌡️ Heat Stress</button>
         <button class="scenario-btn slope"    @click="store.triggerSlopeCrack()">⛰️ Slope Crack</button>
         <button class="scenario-btn vehicle"  @click="store.triggerVehicleProximity()">🚛 Vehicle Risk</button>
         <button class="scenario-btn sustain"  @click="store.triggerSustainabilityRisk()">🌍 Sustain. Risk</button>
-        <button v-if="store.activeScenario" class="scenario-btn reset" @click="store.resetScenario()">↩ Reset</button>
+        <button class="scenario-btn fire"     @click="store.triggerEquipmentFire()">🔥 Equip. Fire</button>
+        <button class="scenario-btn flood"    @click="store.triggerFloodRisk()">🌊 Flood Risk</button>
+        <button class="scenario-btn fatigue"  @click="store.triggerDriverFatigue()">😴 Driver Fatigue</button>
       </div>
 
       <div class="sidebar-footer">
@@ -156,11 +176,84 @@ function isActive(path) { return route.path === path || (path !== '/' && route.p
 }
 .scenario-btn:hover { color: var(--text-primary); background: var(--bg-card-hover); }
 .scenario-btn.gas:hover,
-.scenario-btn.slope:hover { border-color: var(--status-crit-border); color: var(--status-crit); }
-.scenario-btn.heat:hover { border-color: var(--status-warn-border); color: var(--status-warn); }
-.scenario-btn.vehicle:hover { border-color: var(--status-warn-border); color: var(--status-warn); }
+.scenario-btn.slope:hover,
+.scenario-btn.fire:hover,
+.scenario-btn.flood:hover { border-color: var(--status-crit-border); color: var(--status-crit); }
+.scenario-btn.heat:hover,
+.scenario-btn.vehicle:hover,
+.scenario-btn.fatigue:hover { border-color: var(--status-warn-border); color: var(--status-warn); }
 .scenario-btn.sustain:hover { border-color: var(--sustain-green); color: var(--sustain-green); }
-.scenario-btn.reset { border-color: var(--border-accent); color: var(--accent-blue); }
+.scenario-btn.reset { border-color: var(--border-accent); color: var(--accent-blue); margin-top: 6px; width: 100%; }
+
+/* Active scenario status card */
+.scenario-active-card {
+  background: var(--bg-card);
+  border: 1px solid var(--status-crit-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  margin: 0 2px 8px;
+}
+.scenario-active-card.warning { border-color: var(--status-warn-border); }
+
+.sac-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.sac-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-crit);
+  animation: blink 1s infinite;
+  flex-shrink: 0;
+}
+.scenario-active-card.warning .sac-dot { background: var(--status-warn); }
+.sac-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--status-crit);
+  flex: 1;
+}
+.scenario-active-card.warning .sac-label { color: var(--status-warn); }
+.sac-live {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--status-crit);
+  background: var(--status-crit-bg);
+  border: 1px solid var(--status-crit-border);
+  padding: 1px 5px;
+  border-radius: 3px;
+  animation: blink 1.5s infinite;
+}
+.scenario-active-card.warning .sac-live { color: var(--status-warn); background: var(--status-warn-bg); border-color: var(--status-warn-border); }
+.sac-zone {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.sac-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 2px;
+}
+.sac-step {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+.step-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  flex-shrink: 0;
+}
 
 .sidebar-footer {
   margin-top: auto;

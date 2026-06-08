@@ -7,6 +7,7 @@ const routes = [
   { path: '/ground-sensors',      component: () => import('../views/GroundSensorsView.vue'),      meta:{ title:'Ground Sensors' } },
   { path: '/worker-health',       component: () => import('../views/WorkerHealthView.vue'),       meta:{ title:'Worker Health' } },
   { path: '/equipment-safety',    component: () => import('../views/EquipmentSafetyView.vue'),   meta:{ title:'Equipment Safety' } },
+  { path: '/fleet-management',    component: () => import('../views/FleetManagementView.vue'),   meta:{ title:'Fleet Management' } },
   { path: '/ai-prediction',       component: () => import('../views/AiPredictionView.vue'),      meta:{ title:'AI Prediction Engine' } },
   { path: '/incident-response',   component: () => import('../views/IncidentResponseView.vue'),  meta:{ title:'Incident Response' } },
   { path: '/sustainability',      component: () => import('../views/SustainabilityView.vue'),    meta:{ title:'Sustainability Intelligence' } },
@@ -22,7 +23,7 @@ const router = createRouter({
 router.afterEach((to) => {
   document.title = to.meta.title
     ? `${to.meta.title} — AI Mining Safety`
-    : 'AI Mining Safety & Sustainability Command Center'
+    : 'MineSafe AI System'
 })
 
 export default router

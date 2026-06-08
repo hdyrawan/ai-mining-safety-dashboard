@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { drones } from '../data/mockData.js'
+import { drones, hazardCameraDetections } from '../data/mockData.js'
 import DroneCard from '../components/DroneCard.vue'
 import TrendChart from '../components/TrendChart.vue'
 import StatusBadge from '../components/StatusBadge.vue'
@@ -15,6 +15,17 @@ const batteryTrend = {
   labels: ['Eagle-1','Eagle-2','Falcon-1','Falcon-2','Hawk-1','Hawk-2'],
   series: [{ name:'Battery %', color:'#3b82f6', values:[87,63,24,91,100,35] }]
 }
+
+const cameraZones = [
+  { id:'CAM-01', location:'Open Pit A — Main Access Gate',     type:'Fixed PTZ' },
+  { id:'CAM-02', location:'Blast Zone B — Zone Entry',         type:'Fixed PTZ' },
+  { id:'CAM-03', location:'Blast Zone B — Prep Area',          type:'Fixed PTZ' },
+  { id:'CAM-05', location:'Processing Plant — Loading Bay',    type:'Fixed PTZ' },
+  { id:'CAM-07', location:'Haul Road — Z1 Crossing',          type:'Fixed PTZ' },
+  { id:'CAM-08', location:'Open Pit A — Equipment Pad',        type:'Fixed PTZ' },
+  { id:'CAM-11', location:'Underground C — Conveyor Level 2',  type:'Fixed PTZ' },
+  { id:'CAM-14', location:'Tailings Dam — South Berm',         type:'Mobile AI' },
+]
 
 const patrolData = {
   labels: ['06:00','08:00','10:00','12:00','14:00','16:00'],
@@ -125,12 +136,83 @@ const patrolData = {
       </div>
     </div>
 
+    <!-- ── AI Hazard Camera Network ──────────────────────────────────────── -->
+    <div class="section-divider" style="margin-top:24px">
+      <span class="section-label">📷 AI HAZARD CAMERA NETWORK</span>
+    </div>
+
+    <!-- Camera KPIs -->
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="card stat-mini">
+        <div class="sm-val">14</div>
+        <div class="sm-label">Cameras Online</div>
+      </div>
+      <div class="card stat-mini">
+        <div class="sm-val warn">{{ hazardCameraDetections.filter(d => !d.resolved).length }}</div>
+        <div class="sm-label">Active Detections</div>
+      </div>
+      <div class="card stat-mini">
+        <div class="sm-val ok">{{ hazardCameraDetections.filter(d => d.resolved).length }}</div>
+        <div class="sm-label">Resolved Today</div>
+      </div>
+      <div class="card stat-mini">
+        <div class="sm-val">{{ Math.round(hazardCameraDetections.reduce((a,d)=>a+d.confidence,0)/hazardCameraDetections.length) }}%</div>
+        <div class="sm-label">Avg Confidence</div>
+      </div>
+    </div>
+
+    <!-- Camera Network Map + Recent Detections -->
+    <div class="grid-2" style="margin-bottom:16px">
+      <!-- Camera zone coverage -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">🗺️ Camera Zone Coverage</span></div>
+        <div class="card-body">
+          <div class="cam-zone-list">
+            <div v-for="(cam, i) in cameraZones" :key="i" class="cam-zone-row">
+              <span class="cz-id">{{ cam.id }}</span>
+              <span class="cz-location">{{ cam.location }}</span>
+              <span class="cz-type">{{ cam.type }}</span>
+              <StatusBadge status="normal" size="sm" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent hazard detections -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">⚠️ Recent AI Hazard Detections</span></div>
+        <div class="card-body">
+          <div class="hcam-list">
+            <div v-for="d in hazardCameraDetections" :key="d.id"
+              :class="['hcam-row', d.resolved ? 'resolved' : d.severity]">
+              <div class="hcam-top">
+                <StatusBadge :status="d.resolved ? 'info' : d.severity" size="sm" />
+                <span class="hcam-type">{{ d.type.replace(/_/g,' ').toUpperCase() }}</span>
+                <span class="hcam-cam">{{ d.camera }}</span>
+                <span class="hcam-zone">{{ d.zone }}</span>
+                <span class="hcam-time">{{ d.time }}</span>
+                <span class="hcam-conf">{{ d.confidence }}%</span>
+              </div>
+              <div class="hcam-desc">{{ d.description }}</div>
+              <div v-if="d.resolved" class="hcam-resolved">✔ Resolved</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Capabilities info -->
-    <div class="capabilities-panel card" style="margin-top:16px">
-      <div class="card-header"><span class="card-title">🤖 AI Detection Capabilities</span></div>
+    <div class="capabilities-panel card">
+      <div class="card-header"><span class="card-title">🤖 AI Detection Capabilities — Drone &amp; Camera</span></div>
       <div class="card-body capabilities-grid">
-        <div v-for="cap in ['Slope Crack Detection','Flooding / Landslide','Restricted Area Intrusion','Environmental Boundary Breach','Structural Anomaly','Water Runoff Monitoring','Vegetation Disturbance','Vehicle Position Tracking']"
-          :key="cap" class="cap-item">
+        <div v-for="cap in [
+          'Slope Crack Detection','Flooding / Landslide',
+          'Restricted Area Intrusion','Environmental Boundary Breach',
+          'Structural Anomaly','Water Runoff Monitoring',
+          'Vegetation Disturbance','Vehicle Position Tracking',
+          'PPE Compliance (Hard Hat, Glasses, Vest)','Unsafe Act Detection',
+          'Vehicle–Pedestrian Proximity','Unguarded Machinery Access',
+        ]" :key="cap" class="cap-item">
           <span class="cap-dot"></span>{{ cap }}
         </div>
       </div>
@@ -177,6 +259,29 @@ const patrolData = {
 .capabilities-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
 .cap-item { display:flex; align-items:center; gap:6px; font-size:0.75rem; color:var(--text-secondary); }
 .cap-dot { width:6px; height:6px; border-radius:50%; background:var(--status-ok); flex-shrink:0; }
+
+.section-divider { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.section-divider::before,.section-divider::after { content:''; flex:1; height:1px; background:var(--border-base); }
+.section-label { font-size:0.68rem; font-weight:700; color:var(--text-dim); letter-spacing:0.1em; white-space:nowrap; }
+
+.cam-zone-list { display:flex; flex-direction:column; gap:7px; }
+.cam-zone-row { display:flex; align-items:center; gap:8px; font-size:0.75rem; }
+.cz-id { font-family:var(--font-mono); color:var(--accent-cyan); min-width:60px; font-size:0.72rem; }
+.cz-location { color:var(--text-secondary); flex:1; }
+.cz-type { font-size:0.68rem; color:var(--text-dim); white-space:nowrap; }
+
+.hcam-list { display:flex; flex-direction:column; gap:8px; max-height:340px; overflow-y:auto; }
+.hcam-row { background:var(--bg-secondary); border-radius:var(--radius-sm); padding:8px 10px; border-left:3px solid var(--border-base); }
+.hcam-row.critical { border-left-color:var(--status-crit); }
+.hcam-row.warning  { border-left-color:var(--status-warn); }
+.hcam-row.resolved { opacity:0.6; }
+.hcam-top { display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-bottom:4px; }
+.hcam-type { font-size:0.72rem; font-weight:700; color:var(--text-primary); }
+.hcam-cam, .hcam-zone { font-family:var(--font-mono); font-size:0.68rem; color:var(--accent-cyan); background:rgba(6,182,212,0.08); padding:1px 5px; border-radius:3px; }
+.hcam-time { font-family:var(--font-mono); font-size:0.68rem; color:var(--text-dim); margin-left:auto; }
+.hcam-conf { font-size:0.68rem; color:var(--text-muted); }
+.hcam-desc { font-size:0.73rem; color:var(--text-secondary); }
+.hcam-resolved { font-size:0.68rem; color:var(--status-ok); margin-top:3px; }
 
 @media(max-width:900px){ .capabilities-grid { grid-template-columns:repeat(2,1fr); } }
 </style>

@@ -214,6 +214,47 @@ export const sustainabilityRecommendations = [
   { id:'SR006', priority:'medium', icon:'⚡', title:'Optimise Ventilation to Reduce Energy', description:'Night-shift ventilation in Underground Zone C runs at 100% capacity when gas levels are nominal. Smart ventilation control could save 280 kWh/night without compromising safety thresholds.' },
 ]
 
+// ── Fleet Management ─────────────────────────────────────────────────────────
+export const fleetVehicles = [
+  { id:'FV01', name:'HD785-01',  type:'Haul Truck',    driver:'Ahmad Salleh',  driverId:'W001', status:'operating',  zone:'Z1', speed:28, fuelPct:74, engineTemp:88, fatigueScore:22, distractionAlert:false, phoneUse:false, route:'approved',   licenceValid:true,  proximityAlert:false, maintenanceDueDays:45  },
+  { id:'FV02', name:'HD785-02',  type:'Haul Truck',    driver:'Budi Santoso',  driverId:'W002', status:'operating',  zone:'Z2', speed:34, fuelPct:58, engineTemp:92, fatigueScore:61, distractionAlert:true,  phoneUse:false, route:'approved',   licenceValid:true,  proximityAlert:false, maintenanceDueDays:12  },
+  { id:'FV03', name:'A60H-01',   type:'Articulated',   driver:'—',             driverId:null,   status:'maintenance',zone:'Z4', speed:0,  fuelPct:20, engineTemp:24, fatigueScore:0,  distractionAlert:false, phoneUse:false, route:'approved',   licenceValid:true,  proximityAlert:false, maintenanceDueDays:0   },
+  { id:'FV04', name:'CAT-D11',   type:'Dozer',         driver:'—',             driverId:null,   status:'standby',    zone:'Z2', speed:0,  fuelPct:91, engineTemp:45, fatigueScore:0,  distractionAlert:false, phoneUse:false, route:'approved',   licenceValid:true,  proximityAlert:false, maintenanceDueDays:120 },
+  { id:'FV05', name:'LV-07',     type:'Light Vehicle', driver:'Diana Putri',   driverId:'W004', status:'operating',  zone:'Z3', speed:42, fuelPct:65, engineTemp:72, fatigueScore:78, distractionAlert:false, phoneUse:true,  route:'approved',   licenceValid:true,  proximityAlert:false, maintenanceDueDays:30  },
+  { id:'FV06', name:'LV-12',     type:'Light Vehicle', driver:'Eko Prasetyo',  driverId:'W005', status:'operating',  zone:'Z1', speed:18, fuelPct:88, engineTemp:68, fatigueScore:15, distractionAlert:false, phoneUse:false, route:'unapproved', licenceValid:true,  proximityAlert:false, maintenanceDueDays:60  },
+  { id:'FV07', name:'ZX870-01',  type:'Excavator',     driver:'Gunawan Hadi',  driverId:'W007', status:'operating',  zone:'Z1', speed:0,  fuelPct:62, engineTemp:95, fatigueScore:55, distractionAlert:true,  phoneUse:false, route:'approved',   licenceValid:false, proximityAlert:true,  maintenanceDueDays:5   },
+  { id:'FV08', name:'LHD-01',    type:'LHD Loader',    driver:'Hendra Wijaya', driverId:'W008', status:'operating',  zone:'Z3', speed:8,  fuelPct:71, engineTemp:84, fatigueScore:29, distractionAlert:false, phoneUse:false, route:'approved',   licenceValid:true,  proximityAlert:false, maintenanceDueDays:80  },
+]
+
+export const operatorLicences = [
+  { id:'OL001', name:'Ahmad Salleh',   vehicle:'HD785-01', licenceType:'HC — Heavy Combination', licenceNo:'KAL-HC-441', expiryDate:'2026-08-20', daysUntilExpiry:255, status:'valid',    trainingCurrent:true  },
+  { id:'OL002', name:'Budi Santoso',   vehicle:'HD785-02', licenceType:'HC — Heavy Combination', licenceNo:'KAL-HC-219', expiryDate:'2025-03-15', daysUntilExpiry:84,  status:'expiring', trainingCurrent:true  },
+  { id:'OL003', name:'Chen Wei',       vehicle:'A60H-01',  licenceType:'HR — Heavy Rigid',        licenceNo:'KAL-HR-088', expiryDate:'2025-02-10', daysUntilExpiry:51,  status:'expiring', trainingCurrent:false },
+  { id:'OL004', name:'Diana Putri',    vehicle:'LV-07',    licenceType:'C — Car / Light Vehicle', licenceNo:'KAL-C-772',  expiryDate:'2025-01-20', daysUntilExpiry:30,  status:'expiring', trainingCurrent:true  },
+  { id:'OL005', name:'Eko Prasetyo',   vehicle:'LV-12',    licenceType:'C — Car / Light Vehicle', licenceNo:'KAL-C-503',  expiryDate:'2024-12-10', daysUntilExpiry:-11, status:'expired',  trainingCurrent:true  },
+  { id:'OL006', name:'Gunawan Hadi',   vehicle:'ZX870-01', licenceType:'HR — Heavy Rigid',        licenceNo:'KAL-HR-331', expiryDate:'2025-04-30', daysUntilExpiry:130, status:'valid',    trainingCurrent:false },
+  { id:'OL007', name:'Hendra Wijaya',  vehicle:'LHD-01',   licenceType:'LF — Loader / Forklift',  licenceNo:'KAL-LF-114', expiryDate:'2026-01-15', daysUntilExpiry:390, status:'valid',    trainingCurrent:true  },
+  { id:'OL008', name:'Intan Sari',     vehicle:'HD785-03', licenceType:'HC — Heavy Combination', licenceNo:'KAL-HC-667', expiryDate:'2025-06-20', daysUntilExpiry:181, status:'valid',    trainingCurrent:true  },
+]
+
+export const hazardCameraDetections = [
+  { id:'HC001', camera:'CAM-02', zone:'Z2', time:'14:22:10', type:'ppe_violation',     description:'Worker missing hard hat near blast zone entrance',              severity:'warning',  confidence:91, resolved:false },
+  { id:'HC002', camera:'CAM-05', zone:'Z4', time:'14:18:44', type:'restricted_zone',   description:'Unauthorized entry detected in active loading bay',              severity:'critical', confidence:88, resolved:false },
+  { id:'HC003', camera:'CAM-08', zone:'Z1', time:'13:55:30', type:'vehicle_proximity', description:'Light vehicle within 10m of operating excavator ZX870-01',       severity:'warning',  confidence:85, resolved:true  },
+  { id:'HC004', camera:'CAM-03', zone:'Z2', time:'13:40:05', type:'ppe_violation',     description:'Two workers without safety glasses in blast preparation area',    severity:'warning',  confidence:79, resolved:true  },
+  { id:'HC005', camera:'CAM-11', zone:'Z3', time:'13:25:18', type:'unsafe_act',        description:'Worker bypassing safety barrier on conveyor level 2',             severity:'critical', confidence:94, resolved:true  },
+  { id:'HC006', camera:'CAM-07', zone:'Z1', time:'12:48:33', type:'vehicle_proximity', description:'Pedestrian–vehicle conflict at haul road crossing — Z1 access',   severity:'warning',  confidence:82, resolved:true  },
+]
+
+export const dustAirSensors = [
+  { id:'DA01', location:'Open Pit A — Primary Haul Road',   pm25:38.2, pm10:72.4,  no2:18.2, voc:0.12, temp:32.1, humidity:58, windSpeed:12, windDir:'NE', status:'normal',   trend:'stable' },
+  { id:'DA02', location:'Blast Zone B — Active Face',       pm25:82.6, pm10:145.2, no2:24.8, voc:0.31, temp:35.4, humidity:52, windSpeed:8,  windDir:'SW', status:'critical',  trend:'up'     },
+  { id:'DA03', location:'Processing Plant — Crusher Area',  pm25:58.4, pm10:96.7,  no2:15.4, voc:0.22, temp:34.2, humidity:61, windSpeed:5,  windDir:'E',  status:'warning',   trend:'up'     },
+  { id:'DA04', location:'Underground Zone C — Entry Point', pm25:28.1, pm10:48.6,  no2:12.8, voc:0.08, temp:28.8, humidity:72, windSpeed:15, windDir:'—',  status:'normal',   trend:'stable' },
+  { id:'DA05', location:'Tailings Dam — South Berm',        pm25:42.1, pm10:78.3,  no2:10.2, voc:0.09, temp:33.6, humidity:64, windSpeed:18, windDir:'NW', status:'normal',   trend:'down'   },
+  { id:'DA06', location:'Workshop & Maintenance Bay',       pm25:22.4, pm10:38.8,  no2:31.6, voc:0.48, temp:30.2, humidity:55, windSpeed:4,  windDir:'N',  status:'warning',   trend:'up'     },
+]
+
 export const trendData = {
   gasLevels: {
     labels:['08:00','09:00','10:00','11:00','12:00','13:00','14:00'],
@@ -246,7 +287,22 @@ export const trendData = {
       { name:'Workers at Risk',    color:'#ef4444', values:[0,1,1,2,3,2,4] },
       { name:'PPE Compliance %',   color:'#22c55e', values:[98,97,96,95,94,95,93] },
     ]
-  }
+  },
+  fleetFatigue: {
+    labels:['06:00','08:00','10:00','12:00','14:00','16:00','18:00'],
+    series:[
+      { name:'Avg Driver Fatigue Score',     color:'#f59e0b', values:[8,14,22,31,42,38,51] },
+      { name:'Drivers at Risk (score >50)',  color:'#ef4444', values:[0,0,1,1,2,2,3] },
+    ]
+  },
+  dustAirTrend: {
+    labels:['06:00','08:00','10:00','12:00','14:00','16:00'],
+    series:[
+      { name:'PM₂.₅ Processing (μg/m³)', color:'#f59e0b', values:[44,48,52,58,62,58] },
+      { name:'PM₁₀ Blast Zone (μg/m³)',  color:'#ef4444', values:[88,95,120,145,138,112] },
+      { name:'PM₂.₅ Haul Road (μg/m³)', color:'#3b82f6', values:[28,32,36,38,40,38] },
+    ]
+  },
 }
 
 export const kpiOverview = {
