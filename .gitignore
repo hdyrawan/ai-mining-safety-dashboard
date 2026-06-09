@@ -37,6 +37,5 @@ yarn-error.log*
 *.zip
 .cache/
 
-# Claude Code — never commit
-CLAUDE.md
-.claude/
+# Claude Code settings (local only — do not commit)
+.claude/settings.local.json
