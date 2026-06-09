@@ -8,6 +8,7 @@ const critCount = computed(() => store.criticalCount)
 
 function goPresentation() { router.push('/presentation') }
 function toggleSidebar() { store.toggleSidebar() }
+function toggleTheme() { store.toggleTheme() }
 </script>
 
 <template>
@@ -42,6 +43,9 @@ function toggleSidebar() { store.toggleSidebar() }
         <span class="count-icon">🚁</span>
         <span>3 Drones</span>
       </div>
+      <button class="btn-theme-toggle" @click="toggleTheme" :title="store.theme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'">
+        {{ store.theme === 'dark' ? '☀️' : '🌙' }}
+      </button>
       <button class="btn-presentation" @click="goPresentation">
         ▶ Presentation
       </button>
@@ -123,6 +127,21 @@ function toggleSidebar() { store.toggleSidebar() }
   border-radius: 20px;
 }
 .count-icon { font-size: 0.9rem; }
+.btn-theme-toggle {
+  background: var(--bg-card);
+  border: 1px solid var(--border-base);
+  color: var(--text-secondary);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.btn-theme-toggle:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-accent);
+}
 .btn-presentation {
   background: var(--accent-blue);
   color: white;

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from './components/AppHeader.vue'
 import Navigation from './components/Navigation.vue'
@@ -10,6 +10,11 @@ const router = useRouter()
 const isFullscreen = computed(() => route.meta?.fullscreen === true)
 // Hide chrome when rendered inside a presentation iframe
 const isEmbedded = computed(() => { try { return window.self !== window.top } catch { return true } })
+
+// Sync theme to <html> so CSS variables cascade correctly
+watchEffect(() => {
+  document.documentElement.setAttribute('data-theme', store.theme)
+})
 
 // Close sidebar on route change (mobile nav)
 router.afterEach(() => store.closeSidebar())

@@ -96,6 +96,7 @@ export const store = reactive({
   alerts: [...initialAlerts],
   activeScenario: null,
   sidebarOpen: false,
+  theme: localStorage.getItem('minesafe-theme') || 'dark',
 
   get scenarioConfig() {
     return this.activeScenario ? SCENARIOS[this.activeScenario] : null
@@ -103,6 +104,10 @@ export const store = reactive({
 
   toggleSidebar() { this.sidebarOpen = !this.sidebarOpen },
   closeSidebar()  { this.sidebarOpen = false },
+  toggleTheme() {
+    this.theme = this.theme === 'dark' ? 'light' : 'dark'
+    localStorage.setItem('minesafe-theme', this.theme)
+  },
 
   _trigger(key) {
     this.activeScenario = key
