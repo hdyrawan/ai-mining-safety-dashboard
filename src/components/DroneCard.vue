@@ -2,8 +2,11 @@
 import StatusBadge from './StatusBadge.vue'
 
 defineProps({
-  drone: { type: Object, required: true }
+  drone: { type: Object, required: true },
+  isSelected: { type: Boolean, default: false }
 })
+
+defineEmits(['select'])
 
 function batteryColor(pct) {
   if (pct >= 60) return 'var(--status-ok)'
@@ -13,7 +16,10 @@ function batteryColor(pct) {
 </script>
 
 <template>
-  <div :class="['drone-card card', { 'has-detection': drone.detections?.length }]">
+  <div
+    :class="['drone-card card', { 'has-detection': drone.detections?.length, 'is-selected': isSelected }]"
+    @click="$emit('select')"
+  >
     <div class="drone-header">
       <div class="drone-name-row">
         <span class="drone-icon">🚁</span>
@@ -72,9 +78,14 @@ function batteryColor(pct) {
 </template>
 
 <style scoped>
-.drone-card { padding: 14px; transition: all var(--transition-base); }
+.drone-card { padding: 14px; transition: all var(--transition-base); cursor: pointer; }
 .drone-card:hover { background: var(--bg-card-hover); transform: translateY(-1px); }
 .has-detection { border-color: var(--status-warn-border); }
+.is-selected {
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 1px var(--accent-blue), var(--shadow-glow-blue);
+  background: var(--bg-card-hover);
+}
 
 .drone-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .drone-name-row { display: flex; align-items: center; gap: 6px; }

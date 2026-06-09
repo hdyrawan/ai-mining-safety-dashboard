@@ -1,9 +1,16 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { drones, hazardCameraDetections } from '../data/mockData.js'
 import DroneCard from '../components/DroneCard.vue'
+import DroneLiveFeedPanel from '../components/DroneLiveFeedPanel.vue'
 import TrendChart from '../components/TrendChart.vue'
 import StatusBadge from '../components/StatusBadge.vue'
+
+const selectedDrone = ref(null)
+
+function selectDrone(drone) {
+  selectedDrone.value = selectedDrone.value?.id === drone.id ? null : drone
+}
 
 const active = computed(() => drones.filter(d => d.status === 'active'))
 const charging = computed(() => drones.filter(d => d.status === 'charging'))
@@ -89,10 +96,28 @@ const patrolData = {
       </div>
     </div>
 
+    <!-- Live Drone Feed Panel (shown when a drone is selected) -->
+    <Transition name="feed-slide">
+      <DroneLiveFeedPanel
+        v-if="selectedDrone"
+        :drone="selectedDrone"
+        @close="selectedDrone = null"
+      />
+    </Transition>
+
     <!-- Drone Fleet Grid -->
-    <div class="section-title" style="margin-bottom:10px">Drone Fleet Status</div>
+    <div class="section-title" style="margin-bottom:10px">
+      Drone Fleet Status
+      <span class="fleet-click-hint">— click a card to view live feed</span>
+    </div>
     <div class="grid-3" style="margin-bottom:16px">
-      <DroneCard v-for="drone in drones" :key="drone.id" :drone="drone" />
+      <DroneCard
+        v-for="drone in drones"
+        :key="drone.id"
+        :drone="drone"
+        :isSelected="selectedDrone?.id === drone.id"
+        @select="selectDrone(drone)"
+      />
     </div>
 
     <!-- Charts -->
@@ -284,4 +309,18 @@ const patrolData = {
 .hcam-resolved { font-size:0.68rem; color:var(--status-ok); margin-top:3px; }
 
 @media(max-width:900px){ .capabilities-grid { grid-template-columns:repeat(2,1fr); } }
+
+.fleet-click-hint {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0;
+  font-family: var(--font-sans);
+}
+
+/* Live feed panel slide transition */
+.feed-slide-enter-active { transition: all 0.25s ease; }
+.feed-slide-leave-active { transition: all 0.20s ease; }
+.feed-slide-enter-from { opacity: 0; transform: translateY(-8px); }
+.feed-slide-leave-to   { opacity: 0; transform: translateY(-4px); }
 </style>

@@ -33,12 +33,12 @@ export const workers = [
 ]
 
 export const drones = [
-  { id:'D01', name:'Eagle-1',   status:'active',    battery:87, altitude:120, speed:14, mission:'Zone A Perimeter Patrol',       signalStrength:92, flightHours:1240, detections:[] },
-  { id:'D02', name:'Eagle-2',   status:'active',    battery:63, altitude:95,  speed:12, mission:'Blast Zone B Inspection',       signalStrength:88, flightHours:980,  detections:[{ type:'slope_crack', severity:'warning', description:'Minor slope crack detected, 15m segment', confidence:84 }] },
-  { id:'D03', name:'Falcon-1',  status:'charging',  battery:24, altitude:0,   speed:0,  mission:'Charging — next: Night Survey', signalStrength:100,flightHours:765,  detections:[] },
-  { id:'D04', name:'Falcon-2',  status:'active',    battery:91, altitude:145, speed:16, mission:'Environmental Monitoring',      signalStrength:95, flightHours:432,  detections:[{ type:'water_discharge', severity:'info', description:'Water runoff detected near Zone D boundary', confidence:77 }] },
-  { id:'D05', name:'Hawk-1',    status:'standby',   battery:100,altitude:0,   speed:0,  mission:'Standby — rapid response',      signalStrength:100,flightHours:156,  detections:[] },
-  { id:'D06', name:'Hawk-2',    status:'maintenance',battery:35, altitude:0,  speed:0,  mission:'Maintenance — sensor calibration',signalStrength:0,  flightHours:2100, detections:[] },
+  { id:'D01', name:'Eagle-1',  status:'active',     battery:87,  altitude:120, speed:14, mission:'Zone A Perimeter Patrol',          zone:'Zone A – Perimeter',      cameraMode:'RGB',          confidence:91, signalStrength:92,  flightHours:1240, videoSrc:'/images/mining/Drone_Eagle1.mp4',  detections:[] },
+  { id:'D02', name:'Eagle-2',  status:'active',     battery:63,  altitude:95,  speed:12, mission:'Blast Zone B Inspection',          zone:'Blast Zone B',            cameraMode:'Thermal',       confidence:84, signalStrength:88,  flightHours:980,  videoSrc:'/images/mining/Drone_Eagle2.mp4',  detections:[{ type:'slope_crack',    severity:'warning', title:'Slope crack detected',     description:'Minor slope crack detected, 15m segment',          confidence:84, action:'Dispatch geotechnical inspection' }] },
+  { id:'D03', name:'Falcon-1', status:'charging',   battery:24,  altitude:0,   speed:0,  mission:'Charging — next: Night Survey',    zone:'Charging Bay',            cameraMode:'RGB',          confidence:0,  signalStrength:100, flightHours:765,  videoSrc:null,                               detections:[] },
+  { id:'D04', name:'Falcon-2', status:'active',     battery:91,  altitude:145, speed:16, mission:'Environmental Monitoring',         zone:'Environmental Boundary',  cameraMode:'Multispectral', confidence:77, signalStrength:95,  flightHours:432,  videoSrc:'/images/mining/Drone_Falcon2.mp4', detections:[{ type:'water_discharge', severity:'info',    title:'Water discharge detected', description:'Water runoff detected near Zone D boundary',         confidence:77, action:'Inspect Zone D boundary' }] },
+  { id:'D05', name:'Hawk-1',   status:'standby',    battery:100, altitude:0,   speed:0,  mission:'Standby — rapid response',         zone:'Standby Bay',             cameraMode:'RGB',          confidence:0,  signalStrength:100, flightHours:156,  videoSrc:null,                               detections:[] },
+  { id:'D06', name:'Hawk-2',   status:'maintenance',battery:35,  altitude:0,   speed:0,  mission:'Maintenance — sensor calibration', zone:'Maintenance Bay',         cameraMode:'—',            confidence:0,  signalStrength:0,   flightHours:2100, videoSrc:null,                               detections:[] },
 ]
 
 export const gasSensors = [
