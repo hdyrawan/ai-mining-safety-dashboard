@@ -3,6 +3,11 @@ import { ref, computed } from 'vue'
 import { mineZones, workers, drones } from '../data/mockData.js'
 import { store } from '../store/scenarios.js'
 
+const props = defineProps({
+  highlightedTargets: { type: Array,  default: () => [] },
+  highlightStrength:  { type: String, default: 'none' },  // 'none' | 'light' | 'strong'
+})
+
 const IMAGE_SRC   = '/images/mining/e8277fb6-5f8f-4b45-9f35-7d3461755316.png'
 const imageLoaded = ref(false)
 const imageFailed = ref(false)
@@ -29,9 +34,38 @@ const SCENARIO_MAP = {
   vehicle_proximity: 'excavator-area',
   sustain_risk:      'bio-rehab-zone',
 }
-const hlId  = computed(() => SCENARIO_MAP[store.activeScenario] ?? null)
-const opOf  = id => (!hlId.value ? 1 : id === hlId.value ? 1 : 0.22)
-const isHl  = id => hlId.value === id
+
+// Map from image-mode IDs to schematic zone IDs (Z1–Z9)
+const IMG_TO_SCHEMA = {
+  'fuel-zone-8':    'Z8',
+  'north-slope':    'Z2',
+  'worker-zone-c':  'Z3',
+  'processing-plant':'Z4',
+  'bio-rehab-zone': 'Z6',
+  'excavator-area': 'Z1',
+  'muster-point':   'Z7',
+}
+
+const hlId = computed(() => SCENARIO_MAP[store.activeScenario] ?? null)
+
+const isHl = id => hlId.value === id
+
+function opOf(id) {
+  // Scenario highlight takes priority
+  if (hlId.value) return id === hlId.value ? 1 : 0.22
+
+  // Metric card highlight
+  if (props.highlightedTargets.length > 0) {
+    // For schematic mode the id is a zone ID (Z1–Z9); map image targets to schema IDs
+    const targets = props.highlightedTargets
+    const schemaTargets = targets.map(t => IMG_TO_SCHEMA[t] || t)
+    const allTargets = [...new Set([...targets, ...schemaTargets])]
+    if (allTargets.includes(id)) return 1
+    return props.highlightStrength === 'strong' ? 0.14 : 0.28
+  }
+
+  return 1
+}
 
 // ── Status colours ────────────────────────────────────────────────────────────
 const SC = { normal:'#22c55e', warning:'#f59e0b', critical:'#ef4444', info:'#3b82f6' }
