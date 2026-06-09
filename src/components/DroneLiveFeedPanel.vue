@@ -69,7 +69,7 @@ function placeholderMessage(drone) {
         <div class="drone-feed-video-wrap">
           <!-- Video player -->
           <video
-            v-if="drone.status === 'active' && drone.videoSrc"
+            v-if="drone.status === 'active' && drone.videoSrc && !videoError"
             ref="videoEl"
             class="drone-feed-video"
             :src="drone.videoSrc"
