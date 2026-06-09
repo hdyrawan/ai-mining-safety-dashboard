@@ -1,9 +1,15 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { workers, trendData } from '../data/mockData.js'
 import WorkerHealthTable from '../components/WorkerHealthTable.vue'
+import WorkerHealthDrawer from '../components/WorkerHealthDrawer.vue'
 import TrendChart from '../components/TrendChart.vue'
 import KpiCard from '../components/KpiCard.vue'
+
+const selectedWorker = ref(null)
+function selectWorker(w) {
+  selectedWorker.value = selectedWorker.value?.id === w.id ? null : w
+}
 
 const critWorkers = computed(() => workers.filter(w => w.status === 'critical'))
 const warnWorkers = computed(() => workers.filter(w => w.status === 'warning'))
@@ -60,8 +66,11 @@ const heatStressRecs = [
 
     <!-- Worker Health Table -->
     <div style="margin-bottom:16px">
-      <WorkerHealthTable :workers="workers" />
+      <WorkerHealthTable :workers="workers" :selectedId="selectedWorker?.id" @select="selectWorker" />
     </div>
+
+    <!-- Worker Detail Drawer -->
+    <WorkerHealthDrawer :worker="selectedWorker" @close="selectedWorker = null" />
 
     <!-- Charts row -->
     <div class="grid-2" style="margin-bottom:16px">

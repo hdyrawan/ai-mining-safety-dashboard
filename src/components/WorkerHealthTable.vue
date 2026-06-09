@@ -3,8 +3,11 @@ import { ref, computed } from 'vue'
 import StatusBadge from './StatusBadge.vue'
 
 const props = defineProps({
-  workers: { type: Array, required: true }
+  workers: { type: Array, required: true },
+  selectedId: { type: String, default: null },
 })
+
+const emit = defineEmits(['select'])
 
 const sortKey = ref('status')
 const sortDir = ref(-1)
@@ -74,11 +77,18 @@ function vitalsColor(v, warnLow, warnHigh) {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="w in sorted" :key="w.id" :class="{ 'row-critical': w.status==='critical', 'row-warning': w.status==='warning' }">
+          <tr
+            v-for="w in sorted"
+            :key="w.id"
+            :class="{ 'row-critical': w.status==='critical', 'row-warning': w.status==='warning', 'row-selected': selectedId === w.id }"
+            style="cursor:pointer"
+            :title="`${w.name} · HR ${w.heartRate} bpm · Temp ${w.temperature}°C · SpO₂ ${w.spo2}% · Fatigue ${w.fatigueScore}/100`"
+            @click="emit('select', w)"
+          >
             <td>
               <div class="worker-name">
                 <span class="worker-id-badge">{{ w.id }}</span>
-                {{ w.name }}
+                <span class="worker-name-link">{{ w.name }}</span>
               </div>
             </td>
             <td><span class="zone-chip">{{ w.zone }}</span></td>
@@ -144,7 +154,12 @@ function vitalsColor(v, warnLow, warnHigh) {
 .row-critical td { background: rgba(239,68,68,0.04); }
 .row-warning  td { background: rgba(245,158,11,0.03); }
 
+tr:hover td { background: rgba(59,130,246,0.05) !important; }
+.row-selected td { background: rgba(59,130,246,0.08) !important; border-color: rgba(59,130,246,0.2); }
+
 .worker-name { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; white-space: nowrap; }
+.worker-name-link { color: var(--text-primary); transition: color 0.15s; }
+tr:hover .worker-name-link { color: var(--accent-blue); text-decoration: underline; text-underline-offset: 2px; }
 .worker-id-badge {
   font-size: 0.6rem;
   font-family: var(--font-mono);
