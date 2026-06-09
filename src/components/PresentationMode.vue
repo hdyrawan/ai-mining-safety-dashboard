@@ -52,7 +52,7 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
 
     <!-- Top bar -->
     <div class="pres-topbar">
-      <div class="pres-brand">⛏️ MineSafe AI System — HITSZ 2025</div>
+      <div class="pres-brand">⛏️ MineSafe AI System — HITSZ 2026</div>
       <div class="pres-progress-dots">
         <span
           v-for="(s, i) in presentationSlides" :key="i"
