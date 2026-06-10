@@ -1016,8 +1016,8 @@ export const presentationSlides = [
     ],
     stat:{ value:'347+', label:'Connected safety data points across the site' },
     icon:'📡',
-    photo: 'https://images.unsplash.com/photo-1652145595413-0a79398e5888?w=1200&auto=format&fit=crop&q=80',
-    photoCaption: 'Modern command center — live multi-screen monitoring across all zones (Photo: Ana Garnica / Unsplash)',
+    photo: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=1200&auto=format&fit=crop&q=80',
+    photoCaption: 'Modern command center — real-time monitoring across all zones (Photo: ThisisEngineering / Unsplash)',
   },
 
   // ── 09 · AI Agents ────────────────────────────────────────────────────
