@@ -11,6 +11,7 @@ const routes = [
   { path: '/ai-prediction',       component: () => import('../views/AiPredictionView.vue'),      meta:{ title:'AI Prediction Engine' } },
   { path: '/incident-response',   component: () => import('../views/IncidentResponseView.vue'),  meta:{ title:'Incident Response' } },
   { path: '/sustainability',      component: () => import('../views/SustainabilityView.vue'),    meta:{ title:'Sustainability Intelligence' } },
+  { path: '/noise-exposure',      component: () => import('../views/NoiseExposureView.vue'),     meta:{ title:'Noise Exposure Intelligence' } },
   { path: '/presentation',        component: () => import('../views/PresentationView.vue'),      meta:{ title:'Presentation Mode', fullscreen: true } },
 ]
 
