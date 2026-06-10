@@ -913,8 +913,8 @@ export const presentationSlides = [
     title:'The Mining Safety Challenge',
     subtitle:'Why AI is essential — and why mining is the right environment to demonstrate it',
     icon:'⛏️',
-    photo: null,
-    photoCaption: null,
+    photo: 'https://images.unsplash.com/photo-1571223641822-b82408a0e705?w=1200&auto=format&fit=crop&q=80',
+    photoCaption: 'Open-pit quarry aerial view — the scale and complexity of mining operations (Photo: Dion Beetson / Unsplash)',
     content:[
       'Mining employs <1% of workers yet contributes a disproportionate share of fatal work accidents (ILO, 2023)',
       'Workers face simultaneous exposure: gas, heat, dust, noise, slope instability, and fatigue in one shift',
@@ -937,8 +937,8 @@ export const presentationSlides = [
     title:'The Problem We Want to Solve',
     subtitle:'One question drives the entire system',
     icon:'🔍',
-    photo: null,
-    photoCaption: null,
+    photo: 'https://images.unsplash.com/photo-1622612063021-116cc3407145?w=1200&auto=format&fit=crop&q=80',
+    photoCaption: 'Worker safety in practice — every shift, every zone (Photo: Mufid Majnun / Unsplash)',
     question:'"How can mining operations detect and prevent safety, health, and environmental risks before they become incidents?"',
     points:[
       'Mining risks are dynamic and distributed across hundreds of separate data sources',
