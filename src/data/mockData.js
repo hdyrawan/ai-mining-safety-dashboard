@@ -907,9 +907,34 @@ export const presentationSlides = [
     ],
   },
 
-  // ── 03 · Mining Challenge (real sources) ──────────────────────────────
+  // ── 03 · Why Mining? (bridge) ─────────────────────────────────────────
   {
     id:2, type:'content',
+    title:'Why Mining?',
+    subtitle:'A high-risk, data-rich environment to demonstrate AI for safety and sustainable development',
+    icon:'⚒️',
+    content:[
+      'Mining combines high-risk work, large physical areas, and moving heavy equipment in one environment',
+      'Workers are simultaneously exposed to gas, heat, dust, noise, slope instability, and fatigue',
+      'Safety data is distributed: sensors, wearables, vehicles, equipment, drones — all separate systems',
+      'Environmental responsibility is legally and financially critical for mining operations',
+      'Decisions need to be fast, accurate, and backed by clear evidence',
+      'Mining makes a strong environment to demonstrate AI for safety and sustainable development',
+    ],
+    stat:{ value:'5,000+', label:'Estimated mining fatalities per year (ILO, 2023)' },
+    reasons:[
+      { icon:'⚗️', label:'Gas & environmental hazards' },
+      { icon:'🌡️', label:'Heat & fatigue risk' },
+      { icon:'💥', label:'Blast & slope instability' },
+      { icon:'🚛', label:'Heavy vehicle operations' },
+      { icon:'🎧', label:'Noise exposure risk' },
+      { icon:'🌿', label:'Environmental compliance' },
+    ],
+  },
+
+  // ── 04 · Mining Challenge (real sources) ──────────────────────────────
+  {
+    id:3, type:'content',
     title:'Mining Safety & Sustainability Challenge',
     subtitle:'Why AI is now essential — not optional',
     content:[
@@ -922,15 +947,84 @@ export const presentationSlides = [
     stat:{ value:'5,000+', label:'Estimated mining fatalities / year (ILO)' },
     icon:'⛏️',
     sources:[
-      { label:'ILO — Safety and Health at Work Statistics (ilostat.ilo.org)', url:'https://ilostat.ilo.org/topics/safety-and-health-at-work/', year:'2023' },
-      { label:'ICMM — Safety Performance: Benchmarking 2023 Data (icmm.com)', url:'https://www.icmm.com/en-gb/research/health-safety/benchmarking-2023-safety-data', year:'2024' },
-      { label:'Deloitte — Tracking the Trends 2024: Mining & Metals (deloitte.com)', url:'https://www.deloitte.com/global/en/industries/mining-metals/perspectives/tracking-the-trends.html', year:'2024' },
+      { label:'ILO — Safety and Health at Work Statistics (ilostat.ilo.org)', year:'2023' },
+      { label:'ICMM — Safety Performance: Benchmarking 2023 Data (icmm.com)', year:'2024' },
+      { label:'Deloitte — Tracking the Trends 2024: Mining & Metals (deloitte.com)', year:'2024' },
     ],
   },
 
-  // ── 04 · Data Collection ───────────────────────────────────────────────
+  // ── 05 · The Problem We Want to Solve ─────────────────────────────────
   {
-    id:3, type:'content',
+    id:4, type:'problem',
+    title:'The Problem We Want to Solve',
+    subtitle:'One question drives the entire system',
+    icon:'🔍',
+    question:'"How can mining operations detect and prevent safety, health, and environmental risks before they become incidents?"',
+    points:[
+      'Mining risks are dynamic and distributed across hundreds of separate data sources',
+      'Safety data is fragmented: sensors, workers, vehicles, equipment, drones, and environment are all disconnected systems',
+      'Traditional safety monitoring is reactive — operators learn about incidents after they happen',
+      'Operators need early warning, explainable risk predictions, and recommended actions',
+      'The goal is prevention, not only incident response',
+    ],
+    stat:{ value:'72%', label:'Of mining incidents are preventable with earlier intervention' },
+  },
+
+  // ── 06 · From Reactive to Predictive ─────────────────────────────────
+  {
+    id:5, type:'comparison',
+    title:'From Reactive Monitoring to Predictive Prevention',
+    subtitle:'How MineSafe changes the operational model',
+    icon:'🔄',
+    old:[
+      'Separate, disconnected dashboards',
+      'Manual inspection and site walkthrough',
+      'Periodic safety reports',
+      'Delayed response after an incident',
+      'Compliance reviewed after the fact',
+      'Reactive incident management',
+    ],
+    new:[
+      'Continuous multi-source sensing across all zones',
+      'AI risk prediction with 24-hour horizon',
+      'Explainable alerts with confidence scores',
+      'Real-time command center for all operators',
+      'Human-in-the-loop decision support',
+      'Prevention-focused recommended actions',
+    ],
+    stat:{ value:'89%', label:'Maximum prediction confidence — gas risk model' },
+  },
+
+  // ── 07 · What Problem MineSafe Solves ─────────────────────────────────
+  {
+    id:6, type:'solution',
+    title:'What Problem MineSafe Solves',
+    subtitle:'Connecting fragmented mining safety intelligence into one command center',
+    icon:'🧩',
+    inputs:[
+      '💨 Gas & environmental sensors',
+      '❤️ Worker health wearables',
+      '🚁 Drones & visual inspection',
+      '🚛 Fleet GPS & driver risk',
+      '⚙️ Equipment telemetry',
+      '🎧 Noise exposure dosimeters',
+      '🌿 Sustainability indicators',
+      '🚨 Incident response workflow',
+    ],
+    outputs:[
+      '⚡ Early warning alerts',
+      '📈 24-hour risk forecast',
+      '📊 AI confidence scoring',
+      '🔍 Explainable AI decisions',
+      '✅ Ranked recommended actions',
+      '🌍 ESG & operational visibility',
+    ],
+    stat:{ value:'8', label:'Safety domains connected in one command center' },
+  },
+
+  // ── 08 · Data Collection Layer ────────────────────────────────────────
+  {
+    id:7, type:'content',
     title:'The Data Collection Layer',
     subtitle:'Eyes, ears, and sensors across every square metre of the mine',
     content:[
@@ -944,9 +1038,9 @@ export const presentationSlides = [
     icon:'📡',
   },
 
-  // ── 05 · AI Agents ────────────────────────────────────────────────────
+  // ── 09 · AI Agents ────────────────────────────────────────────────────
   {
-    id:4, type:'agents',
+    id:8, type:'agents',
     title:'AI Agents in the Analytics Layer',
     subtitle:'Five autonomous agents — one unified safety intelligence',
     content:[
@@ -976,14 +1070,76 @@ export const presentationSlides = [
         status:'normal' },
     ],
     sources:[
-      { label:'AI Agent App — Transforming Mining with AI Agents (aiagent.app)', url:'https://aiagent.app/usecases/ai-agents-for-mining', year:'2024' },
-      { label:'GlobalData via MINE Magazine — 2,080 Autonomous Trucks; 80 % fewer accidents (mine.nridigital.com)', url:'https://mine.nridigital.com/mine_oct24/impact-ai-mining-sector', year:'2024' },
+      { label:'AI Agent App — Transforming Mining with AI Agents (aiagent.app)', year:'2024' },
+      { label:'GlobalData via MINE Magazine — 2,080 Autonomous Trucks; 80 % fewer accidents (mine.nridigital.com)', year:'2024' },
     ],
   },
 
-  // ── 06 · Command Center Overview (live dashboard) ─────────────────────
+  // ── 10 · Connection to AIESD Training ────────────────────────────────
   {
-    id:5, type:'dashboard',
+    id:9, type:'training',
+    title:'Connection to AIESD Training',
+    subtitle:'Applying AI for Sustainable Development principles to a real industrial use case',
+    icon:'🎓',
+    intro:'MineSafe applies AIESD learning by turning AI ethics and sustainable development principles into a practical safety technology concept.',
+    stat:{ value:'AIESD', label:'AI for Sustainable Development — HITSZ 2026' },
+    principles:[
+      { icon:'🧑‍💼', title:'Human-centered AI', desc:'AI supports supervisors and safety teams instead of replacing them. Every decision stays with a qualified operator.' },
+      { icon:'🔍', title:'Explainable AI (XAI)', desc:'Each prediction shows why it was triggered — factors, confidence score, data sources, and data quality.' },
+      { icon:'⚖️', title:'Responsible AI', desc:'Confidence scores and data quality are always visible. No recommendation is issued without a clear reasoning chain.' },
+      { icon:'🌍', title:'Sustainable Development', desc:'Worker safety, environmental monitoring, ESG indicators, and prevention of long-term occupational and environmental harm.' },
+      { icon:'🏭', title:'Practical Implementation', desc:'Designed to demonstrate how AI can be deployed in real industrial environments with existing IoT infrastructure.' },
+    ],
+  },
+
+  // ── 11 · Lessons from Industry Visits ────────────────────────────────
+  {
+    id:10, type:'visits',
+    title:'Lessons from Industry Visits',
+    subtitle:'How each company visit shaped MineSafe\'s design',
+    icon:'🏭',
+    visits:[
+      {
+        company:'Chipsea',
+        icon:'🔌',
+        tagline:'Smart IoT Chips',
+        lesson:'Edge sensing and low-power chips enable continuous real-world monitoring at scale.',
+        connection:'Gas sensors, noise sensors, environmental nodes, and equipment telemetry.',
+      },
+      {
+        company:'Mindray',
+        icon:'🏥',
+        tagline:'Medical & Health Devices',
+        lesson:'Reliable vital-sign monitoring supports timely safety decisions in demanding environments.',
+        connection:'Worker heart rate, SpO₂, body temp, fatigue, blood pressure, and heat stress monitoring.',
+      },
+      {
+        company:'BYD',
+        icon:'⚡',
+        tagline:'Intelligent Vehicles & Energy',
+        lesson:'Intelligent vehicles, batteries, and industrial-scale energy systems transform operations.',
+        connection:'Fleet telemetry, vehicle status, driver risk, battery/fuel monitoring, route compliance.',
+      },
+      {
+        company:'Dobot',
+        icon:'🤖',
+        tagline:'Robotics & Automation',
+        lesson:'Robotics automates inspection and reduces human exposure to hazardous environments.',
+        connection:'Drone inspection, robotic inspection concept, and remote hazard detection.',
+      },
+      {
+        company:'Fengnong Holdings',
+        icon:'🌾',
+        tagline:'Digital Agriculture & Sustainability',
+        lesson:'Digital technology supports sustainable operations, environmental control, and resource efficiency.',
+        connection:'ESG dashboard, dust, water, runoff, land rehabilitation, sustainability intelligence.',
+      },
+    ],
+  },
+
+  // ── 12 · Command Center Overview (live dashboard) ─────────────────────
+  {
+    id:11, type:'dashboard',
     title:'Command Center Overview',
     subtitle:'Every alert. Every worker. Every risk. One screen.',
     content:[
@@ -994,12 +1150,12 @@ export const presentationSlides = [
     ],
     stat:{ value:'< 30s', label:'Alert-to-response latency' },
     icon:'🖥️',
-    route:'/overview', routeLabel:'Open Command Center',
+    route:'/overview',
   },
 
-  // ── 07 · Drone Monitoring (live dashboard) ────────────────────────────
+  // ── 13 · Drone Monitoring ─────────────────────────────────────────────
   {
-    id:6, type:'dashboard',
+    id:12, type:'dashboard',
     title:'Drone Monitoring',
     subtitle:'Aerial surveillance and slope crack detection in real time',
     content:[
@@ -1010,12 +1166,12 @@ export const presentationSlides = [
     ],
     stat:{ value:'6', label:'Drones active in flight' },
     icon:'🚁',
-    route:'/drone-monitoring', routeLabel:'Open Drone Monitoring',
+    route:'/drone-monitoring',
   },
 
-  // ── 08 · Ground Sensors (live dashboard) ──────────────────────────────
+  // ── 14 · Ground Sensors ───────────────────────────────────────────────
   {
-    id:7, type:'dashboard',
+    id:13, type:'dashboard',
     title:'Ground Sensor Network',
     subtitle:'89 sensors — gas, dust, temperature, vibration across 9 zones',
     content:[
@@ -1026,12 +1182,12 @@ export const presentationSlides = [
     ],
     stat:{ value:'89', label:'Ground sensors online' },
     icon:'📡',
-    route:'/ground-sensors', routeLabel:'Open Ground Sensors',
+    route:'/ground-sensors',
   },
 
-  // ── 09 · Worker Health (live dashboard) ───────────────────────────────
+  // ── 15 · Worker Health ────────────────────────────────────────────────
   {
-    id:8, type:'dashboard',
+    id:14, type:'dashboard',
     title:'Worker Health & Safety',
     subtitle:'247 wearables · every worker monitored continuously',
     content:[
@@ -1042,12 +1198,12 @@ export const presentationSlides = [
     ],
     stat:{ value:'247', label:'Workers monitored in real time' },
     icon:'❤️',
-    route:'/worker-health', routeLabel:'Open Worker Health',
+    route:'/worker-health',
   },
 
-  // ── 10 · Equipment Safety (live dashboard) ────────────────────────────
+  // ── 16 · Equipment Safety ─────────────────────────────────────────────
   {
-    id:9, type:'dashboard',
+    id:15, type:'dashboard',
     title:'Equipment Safety',
     subtitle:'8 heavy machines — predictive maintenance active',
     content:[
@@ -1058,14 +1214,14 @@ export const presentationSlides = [
     ],
     stat:{ value:'8', label:'Heavy machines monitored' },
     icon:'⚙️',
-    route:'/equipment-safety', routeLabel:'Open Equipment Safety',
+    route:'/equipment-safety',
   },
 
-  // ── 11 · Fleet Management (live dashboard) ────────────────────────────
+  // ── 17 · Fleet Management ─────────────────────────────────────────────
   {
-    id:10, type:'dashboard',
+    id:16, type:'dashboard',
     title:'Fleet Management',
-    subtitle:'Real-time vehicle tracking and route optimisation',
+    subtitle:'Real-time vehicle tracking and route compliance',
     content:[
       'Live GPS tracking of all vehicles: position, speed, heading, and zone assignment',
       'Operator licence and safety training compliance — expiry alerts sent 90 days in advance',
@@ -1074,28 +1230,28 @@ export const presentationSlides = [
     ],
     stat:{ value:'12%', label:'Fuel savings via AI route optimisation' },
     icon:'🚛',
-    route:'/fleet-management', routeLabel:'Open Fleet Management',
+    route:'/fleet-management',
   },
 
-  // ── 12 · AI Prediction Engine (live dashboard) ────────────────────────
+  // ── 18 · AI Prediction Engine ─────────────────────────────────────────
   {
-    id:11, type:'dashboard',
+    id:17, type:'dashboard',
     title:'AI Prediction Engine',
     subtitle:'Detect risk before it becomes an incident',
     content:[
-      'ML models for gas accumulation, equipment failure, worker fatigue, and slope stability',
+      'ML models for gas accumulation, equipment failure, worker fatigue, slope stability, noise, and route deviation',
       'Each prediction shows confidence score, time-to-event, and top contributing sensor factors',
       'Explainable AI: every recommendation includes the reasoning chain — no black box decisions',
-      'Models retrain continuously from live data; accuracy tracked per model over time',
+      'What-if simulation: test intervention actions and see simulated risk reduction before acting',
     ],
     stat:{ value:'89%', label:'Maximum prediction confidence (Gas Safety Model)' },
     icon:'🧠',
-    route:'/ai-prediction', routeLabel:'Open AI Prediction Engine',
+    route:'/ai-prediction',
   },
 
-  // ── 13 · Incident Response (live dashboard) ───────────────────────────
+  // ── 19 · Incident Response ────────────────────────────────────────────
   {
-    id:12, type:'dashboard',
+    id:18, type:'dashboard',
     title:'Incident & Environmental Response',
     subtitle:'From detection to resolution in minutes',
     content:[
@@ -1106,12 +1262,12 @@ export const presentationSlides = [
     ],
     stat:{ value:'< 8 min', label:'Rescue team response time' },
     icon:'🚨',
-    route:'/incident-response', routeLabel:'Open Incident Response',
+    route:'/incident-response',
   },
 
-  // ── 14 · Sustainability (live dashboard) ──────────────────────────────
+  // ── 20 · Sustainability ───────────────────────────────────────────────
   {
-    id:13, type:'dashboard',
+    id:19, type:'dashboard',
     title:'Sustainability Intelligence',
     subtitle:'AI safety systems are sustainability systems',
     content:[
@@ -1122,28 +1278,28 @@ export const presentationSlides = [
     ],
     stat:{ value:'87%', label:'ESG Compliance Readiness Score' },
     icon:'🌿',
-    route:'/sustainability', routeLabel:'Open Sustainability Dashboard',
+    route:'/sustainability',
   },
 
-  // ── 15 · Noise Exposure (live dashboard) ─────────────────────────────
+  // ── 21 · Noise Exposure ───────────────────────────────────────────────
   {
-    id:14, type:'dashboard',
+    id:20, type:'dashboard',
     title:'Noise Exposure Intelligence',
     subtitle:'Preventing noise-induced hearing loss with AI and wearables',
     content:[
       '64 workers monitored for noise dose in real time using wearable dosimeters and zone beacons',
       '6 workers currently above the 85 dBA 8-hour action level — rotation and PPE alerts issued',
       'AI anomaly detection: Crusher C2 bearing noise pattern changed (78% conf.) — inspection scheduled',
-      'Hierarchy-of-controls recommendations generated automatically from sensor readings and worker dose data',
+      'Hierarchy-of-controls recommendations generated automatically from sensor and dose data',
     ],
     stat:{ value:'91%', label:'Hearing PPE compliance — verified in high-noise zones' },
     icon:'🎧',
-    route:'/noise-exposure', routeLabel:'Open Noise Exposure Dashboard',
+    route:'/noise-exposure',
   },
 
-  // ── 16 · Business Value ────────────────────────────────────────────────
+  // ── 22 · Business Value ───────────────────────────────────────────────
   {
-    id:15, type:'content',
+    id:21, type:'content',
     title:'Business Value Summary',
     subtitle:'Safer workers. Lower impact. Better governance.',
     content:[
@@ -1157,9 +1313,19 @@ export const presentationSlides = [
     icon:'📊',
   },
 
-  // ── 17 · Thank You ─────────────────────────────────────────────────────
+  // ── 23 · Takeaway ─────────────────────────────────────────────────────
   {
-    id:16, type:'thankyou',
+    id:22, type:'takeaway',
+    title:'Takeaway',
+    icon:'✨',
+    statement:'MineSafe demonstrates how AI can move industrial safety from reactive response to predictive prevention. The system does not only show data — it connects data, explains risk, recommends action, and supports safer, more sustainable mining operations.',
+    closing:'"The goal is not to replace human judgment, but to give safety teams earlier, clearer, and more actionable intelligence."',
+    stat:{ value:'Prevention', label:'Not just monitoring — proactive risk reduction' },
+  },
+
+  // ── 24 · Thank You ────────────────────────────────────────────────────
+  {
+    id:23, type:'thankyou',
     title:'Thank You',
     subtitle:'Harbin Institute of Technology, Shenzhen',
     institution:'HITSZ — AI for Sustainable Development · 2026',
