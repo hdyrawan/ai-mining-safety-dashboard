@@ -25,11 +25,11 @@ src/
 │   ├── variables.css   ← all CSS custom properties (colours, spacing, shadows)
 │   └── base.css        ← reset, layout shell, utility classes, responsive rules
 ├── assets/main.css     ← global component-level shared styles
-├── components/         ← 24 reusable components (see list below)
+├── components/         ← 26 reusable components (see list below)
 ├── data/mockData.js    ← single source of truth for ALL mock data
-├── router/index.js     ← 10 routes
+├── router/index.js     ← 11 routes
 ├── store/scenarios.js  ← reactive store: alerts, scenario sim, sidebar toggle
-└── views/              ← 10 page views
+└── views/              ← 11 page views
 
 .claude/
 └── commands/
@@ -51,10 +51,11 @@ docs/
 | /ai-prediction | AiPredictionView.vue |
 | /incident-response | IncidentResponseView.vue |
 | /sustainability | SustainabilityView.vue |
+| /noise-exposure | NoiseExposureView.vue |
 | /presentation | PresentationView.vue (fullscreen, no sidebar/header) |
 
 ## Components
-AppHeader, Navigation, KpiCard, StatusBadge, AlertPanel, MineMap, TrendChart, RiskGauge, MiniTrend, MetricDetailDrawer, DroneCard, DroneLiveFeedPanel, SensorGrid, WorkerHealthTable, WorkerHealthDrawer, EquipmentCard, PredictionCard, IncidentTimeline, SustainabilityScorecard, SdgAlignmentPanel, EnvironmentalRiskMap, EsgReadinessPanel, PresentationMode
+AppHeader, Navigation, KpiCard, StatusBadge, AlertPanel, MineMap, TrendChart, RiskGauge, MiniTrend, MetricDetailDrawer, DroneCard, DroneLiveFeedPanel, SensorGrid, WorkerHealthTable, WorkerHealthDrawer, EquipmentCard, PredictionCard, IncidentTimeline, SustainabilityScorecard, SdgAlignmentPanel, EnvironmentalRiskMap, EsgReadinessPanel, PresentationMode, NoiseExposureDrawer
 
 ## Design system
 All colours are CSS custom properties in `variables.css`. Never hardcode colours in components.
@@ -97,6 +98,38 @@ Workers have flat fields (table display) plus extended nested objects (drawer de
   aiExplanation: { confidence, factors: [], recommendedActions: [] }
 }
 ```
+
+## Noise Exposure module (added 2026-06-10)
+Route `/noise-exposure` → `NoiseExposureView.vue`. Drawer: `NoiseExposureDrawer.vue`.
+
+**mockData.js exports for this module:**
+| Export | Purpose |
+|--------|---------|
+| `noiseKpis` | 4 KPI cards (avg exposure, above action level, peak events, PPE compliance) |
+| `zoneNoiseLevels` | 5 zones with dBA, status, worker count, trend, note |
+| `workerNoiseExposure` | 6 workers — flat fields + timeline[], peakEvents[], aiExplanation |
+| `noiseAnomalies` | 3 AI-detected anomalies (asset, zoneId, confidence, recommendedAction) |
+| `noiseRecommendedControls` | 4 hierarchy-of-controls levels (Engineering/Admin/PPE/Monitoring) |
+| `noiseComplianceEvidence` | Counts for compliance card + standard label |
+
+**Worker noise data shape:**
+```js
+{
+  id, name, zone, zoneId,       // zoneId links to zoneNoiseLevels and noiseAnomalies
+  twa8h, peakDb, dailyDose,     // core exposure numbers
+  ppeStatus, status, recommendation,
+  timeline: [{ time, dba, event }],
+  peakEvents: [{ time, db, cause }],
+  aiExplanation,                // plain text string shown in drawer XAI panel
+}
+```
+
+**Interactions:**
+- Clicking "Workers Above Action Level" or "Peak Events Today" KPI → filters worker table
+- Clicking worker row → opens `NoiseExposureDrawer` with timeline bars, dose bar, peak events, AI explanation
+- Clicking an anomaly card → highlights linked zone in heatmap (cyan border) via `zoneId` match
+
+**Presentation slide:** slide 15 (between Sustainability and Business Value), `type:'dashboard'`, `route:'/noise-exposure'`
 
 ## Cloudflare Workers deployment
 - `wrangler.toml` at project root
