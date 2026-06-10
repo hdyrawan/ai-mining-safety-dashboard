@@ -2,16 +2,20 @@
 import { ref } from 'vue'
 import StatusBadge from './StatusBadge.vue'
 
-defineProps({ prediction: { type: Object, required: true } })
+defineProps({
+  prediction: { type: Object, required: true },
+  isActive:   { type: Boolean, default: false },
+})
+const emit = defineEmits(['select'])
 
 const expanded = ref(false)
 
-const typeIcons = { gas_risk:'💨', heat_stress:'🌡️', equipment_failure:'⚙️', slope_risk:'⛰️', default:'🤖' }
+const typeIcons = { gas_risk:'💨', heat_stress:'🌡️', equipment_failure:'⚙️', slope_risk:'⛰️', noise_risk:'🎧', route_risk:'🗺️', default:'🤖' }
 </script>
 
 <template>
-  <div :class="['pred-card card', `pred-${prediction.severity}`]">
-    <div class="pred-header" @click="expanded = !expanded">
+  <div :class="['pred-card card', `pred-${prediction.severity}`, { 'pred-active': isActive }]">
+    <div class="pred-header" @click="expanded = !expanded; emit('select', prediction)">
       <div class="pred-icon-title">
         <span class="pred-type-icon">{{ typeIcons[prediction.type] || typeIcons.default }}</span>
         <div>
@@ -59,8 +63,9 @@ const typeIcons = { gas_risk:'💨', heat_stress:'🌡️', equipment_failure:'�
 </template>
 
 <style scoped>
-.pred-card { overflow: hidden; transition: all var(--transition-base); }
+.pred-card { overflow: hidden; transition: all var(--transition-base); cursor: pointer; }
 .pred-card:hover { background: var(--bg-card-hover); }
+.pred-active { box-shadow: 0 0 0 2px var(--accent-blue), 0 4px 20px rgba(59,130,246,0.15) !important; }
 .pred-critical { border-left: 3px solid var(--status-crit); }
 .pred-warning  { border-left: 3px solid var(--status-warn); }
 .pred-normal   { border-left: 3px solid var(--status-ok); }
