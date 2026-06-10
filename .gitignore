@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Claude Code settings (local only — do not commit)
 .claude/settings.local.json
+
+# Claude instructions (local only — keep off GitHub)
+CLAUDE.md

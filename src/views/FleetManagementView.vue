@@ -1,8 +1,14 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { fleetVehicles, operatorLicences, trendData } from '../data/mockData.js'
 import StatusBadge from '../components/StatusBadge.vue'
 import TrendChart from '../components/TrendChart.vue'
+import VehicleTrackingDrawer from '../components/VehicleTrackingDrawer.vue'
+
+const selectedVehicle = ref(null)
+function selectVehicle(v) {
+  selectedVehicle.value = selectedVehicle.value?.id === v.id ? null : v
+}
 
 const operating     = computed(() => fleetVehicles.filter(v => v.status === 'operating').length)
 const fatigueAlerts = computed(() => fleetVehicles.filter(v => v.fatigueScore > 50).length)
@@ -108,7 +114,13 @@ function engineTempColor(t) {
             </thead>
             <tbody>
               <tr v-for="v in fleetVehicles" :key="v.id"
-                :class="{ 'row-alert': v.proximityAlert || v.phoneUse || v.fatigueScore >= 70 || v.route === 'unapproved' }">
+                class="fleet-row"
+                :class="{
+                  'row-alert':  v.proximityAlert || v.phoneUse || v.fatigueScore >= 70 || v.route === 'unapproved',
+                  'row-active': selectedVehicle?.id === v.id
+                }"
+                @click="selectVehicle(v)"
+              >
                 <td class="mono accent">{{ v.name }}</td>
                 <td class="dim-text">{{ v.type }}</td>
                 <td>{{ v.driver }}</td>
@@ -142,6 +154,7 @@ function engineTempColor(t) {
           <span>📱 Phone use detected</span>
           <span>👁️ Distraction alert</span>
           <span style="color:var(--status-warn)">yellow row = active risk</span>
+          <span style="color:var(--accent-blue)">click any row → live tracking</span>
         </div>
       </div>
     </div>
@@ -222,6 +235,9 @@ function engineTempColor(t) {
       </div>
     </div>
 
+    <!-- Vehicle Tracking Drawer -->
+    <VehicleTrackingDrawer :vehicle="selectedVehicle" @close="selectedVehicle = null" />
+
     <!-- Fleet Predictive Maintenance -->
     <div class="card">
       <div class="card-header">
@@ -268,7 +284,10 @@ function engineTempColor(t) {
 .al-msg { color:var(--text-secondary); }
 
 .table-wrap { overflow-x:auto; }
+.fleet-row { cursor: pointer; transition: background var(--transition-fast); }
+.fleet-row:hover { background: var(--bg-card-hover); }
 .row-alert { background:rgba(239,68,68,0.04); }
+.row-active { background: var(--status-info-bg) !important; outline: 1px solid var(--status-info-border); }
 .mono  { font-family:var(--font-mono); }
 .accent { color:var(--accent-blue); }
 .dim-text { color:var(--text-muted); }
