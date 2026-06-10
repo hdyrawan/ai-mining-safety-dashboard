@@ -901,64 +901,44 @@ export const presentationSlides = [
     members:[
       { name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture' },
       { name:'Sashi Kumar',        role:'Worker Health & Medical Safety' },
-      { name:'Isabella Gbefa',     role:'Sustainability & ESG Framework' },
+      { name:'Isabella Gbefa',     role:'Health and Safety, ESG Officer' },
       { name:'Shania Clauren',     role:'Finance & Business Value' },
       { name:'Ahmed',              role:'Data Analytics & AI/ML' },
     ],
   },
 
-  // ── 03 · Why Mining? (bridge) ─────────────────────────────────────────
+  // ── 03 · The Mining Safety Challenge (merged) ────────────────────────
   {
     id:2, type:'content',
-    title:'Why Mining?',
-    subtitle:'A high-risk, data-rich environment to demonstrate AI for safety and sustainable development',
-    icon:'⚒️',
-    content:[
-      'Mining combines high-risk work, large physical areas, and moving heavy equipment in one environment',
-      'Workers are simultaneously exposed to gas, heat, dust, noise, slope instability, and fatigue',
-      'Safety data is distributed: sensors, wearables, vehicles, equipment, drones — all separate systems',
-      'Environmental responsibility is legally and financially critical for mining operations',
-      'Decisions need to be fast, accurate, and backed by clear evidence',
-      'Mining makes a strong environment to demonstrate AI for safety and sustainable development',
-    ],
-    stat:{ value:'5,000+', label:'Estimated mining fatalities per year (ILO, 2023)' },
-    reasons:[
-      { icon:'⚗️', label:'Gas & environmental hazards' },
-      { icon:'🌡️', label:'Heat & fatigue risk' },
-      { icon:'💥', label:'Blast & slope instability' },
-      { icon:'🚛', label:'Heavy vehicle operations' },
-      { icon:'🎧', label:'Noise exposure risk' },
-      { icon:'🌿', label:'Environmental compliance' },
-    ],
-  },
-
-  // ── 04 · Mining Challenge (real sources) ──────────────────────────────
-  {
-    id:3, type:'content',
-    title:'Mining Safety & Sustainability Challenge',
-    subtitle:'Why AI is now essential — not optional',
-    content:[
-      'Mining employs <1% of the global workforce yet contributes a disproportionate share of fatal work accidents (ILO, 2023)',
-      'ICMM member companies recorded 36 fatalities in 2023 — mobile equipment and structural failures are leading causes',
-      'Globally an estimated 5,000+ miners die each year; small-scale mines are up to 90× more fatal than industrial operations',
-      'Environmental incidents cost the sector $6B+ annually in fines, remediation, and reputational damage',
-      'Deloitte ranks digital transformation as the #1 mining trend for 2024; ESG disclosure mandatory in 60+ jurisdictions',
-    ],
-    stat:{ value:'5,000+', label:'Estimated mining fatalities / year (ILO)' },
+    title:'The Mining Safety Challenge',
+    subtitle:'Why AI is essential — and why mining is the right environment to demonstrate it',
     icon:'⛏️',
+    photo: null,
+    photoCaption: null,
+    content:[
+      'Mining employs <1% of workers yet contributes a disproportionate share of fatal work accidents (ILO, 2023)',
+      'Workers face simultaneous exposure: gas, heat, dust, noise, slope instability, and fatigue in one shift',
+      'Safety data is fragmented across sensors, wearables, vehicles, equipment, and drones — all disconnected',
+      'Environmental incidents cost $6B+ annually in fines, remediation, and reputational damage',
+      'ESG disclosure mandatory in 60+ jurisdictions; investors demand verified sustainability data',
+      'Mining is an ideal environment to demonstrate AI for safety and sustainable development',
+    ],
+    stat:{ value:'5,000+', label:'Estimated mining fatalities / year (ILO, 2023)' },
     sources:[
       { label:'ILO — Safety and Health at Work Statistics (ilostat.ilo.org)', year:'2023' },
-      { label:'ICMM — Safety Performance: Benchmarking 2023 Data (icmm.com)', year:'2024' },
-      { label:'Deloitte — Tracking the Trends 2024: Mining & Metals (deloitte.com)', year:'2024' },
+      { label:'ICMM — Safety Performance Benchmarking 2023 (icmm.com)', year:'2024' },
+      { label:'Deloitte — Tracking the Trends 2024: Mining & Metals', year:'2024' },
     ],
   },
 
-  // ── 05 · The Problem We Want to Solve ─────────────────────────────────
+  // ── 04 · The Problem We Want to Solve ─────────────────────────────────
   {
-    id:4, type:'problem',
+    id:3, type:'problem',
     title:'The Problem We Want to Solve',
     subtitle:'One question drives the entire system',
     icon:'🔍',
+    photo: null,
+    photoCaption: null,
     question:'"How can mining operations detect and prevent safety, health, and environmental risks before they become incidents?"',
     points:[
       'Mining risks are dynamic and distributed across hundreds of separate data sources',
@@ -1092,17 +1072,20 @@ export const presentationSlides = [
     ],
   },
 
-  // ── 11 · Lessons from Industry Visits ────────────────────────────────
+  // ── 10 · Lessons from Industry Visits ────────────────────────────────
   {
-    id:10, type:'visits',
+    id:9, type:'visits',
     title:'Lessons from Industry Visits',
     subtitle:'How each company visit shaped MineSafe\'s design',
     icon:'🏭',
+    photo: null,
     visits:[
       {
         company:'Chipsea',
         icon:'🔌',
         tagline:'Smart IoT Chips',
+        color:'#06b6d4',
+        photo: null,
         lesson:'Edge sensing and low-power chips enable continuous real-world monitoring at scale.',
         connection:'Gas sensors, noise sensors, environmental nodes, and equipment telemetry.',
       },
@@ -1110,6 +1093,8 @@ export const presentationSlides = [
         company:'Mindray',
         icon:'🏥',
         tagline:'Medical & Health Devices',
+        color:'#3b82f6',
+        photo: null,
         lesson:'Reliable vital-sign monitoring supports timely safety decisions in demanding environments.',
         connection:'Worker heart rate, SpO₂, body temp, fatigue, blood pressure, and heat stress monitoring.',
       },
@@ -1117,6 +1102,8 @@ export const presentationSlides = [
         company:'BYD',
         icon:'⚡',
         tagline:'Intelligent Vehicles & Energy',
+        color:'#22c55e',
+        photo: null,
         lesson:'Intelligent vehicles, batteries, and industrial-scale energy systems transform operations.',
         connection:'Fleet telemetry, vehicle status, driver risk, battery/fuel monitoring, route compliance.',
       },
@@ -1124,6 +1111,8 @@ export const presentationSlides = [
         company:'Dobot',
         icon:'🤖',
         tagline:'Robotics & Automation',
+        color:'#a855f7',
+        photo: null,
         lesson:'Robotics automates inspection and reduces human exposure to hazardous environments.',
         connection:'Drone inspection, robotic inspection concept, and remote hazard detection.',
       },
@@ -1131,6 +1120,8 @@ export const presentationSlides = [
         company:'Fengnong Holdings',
         icon:'🌾',
         tagline:'Digital Agriculture & Sustainability',
+        color:'#f59e0b',
+        photo: null,
         lesson:'Digital technology supports sustainable operations, environmental control, and resource efficiency.',
         connection:'ESG dashboard, dust, water, runoff, land rehabilitation, sustainability intelligence.',
       },

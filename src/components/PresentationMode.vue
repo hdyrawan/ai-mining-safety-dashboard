@@ -185,21 +185,33 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
               </ul>
             </div>
             <div class="prob-right">
-              <div class="pres-stat-card">
-                <div class="pres-stat-value">{{ slide.stat.value }}</div>
-                <div class="pres-stat-label">{{ slide.stat.label }}</div>
-              </div>
-              <div class="prob-goal-card">
-                <div class="prob-goal-icon">🎯</div>
-                <div class="prob-goal-label">The Goal</div>
-                <div class="prob-goal-text">Prevention, not only incident response</div>
-              </div>
-              <div class="prob-flow">
-                <div v-for="step in ['Detect risk early', 'Explain the cause', 'Recommend action', 'Prevent the incident']"
-                  :key="step" class="prob-flow-step">
-                  <span class="prob-flow-dot"></span>{{ step }}
+              <template v-if="slide.photo">
+                <div class="slide-photo-panel">
+                  <img :src="slide.photo" :alt="slide.photoCaption || slide.title" class="slide-photo-img" />
+                  <div v-if="slide.photoCaption" class="slide-photo-caption">{{ slide.photoCaption }}</div>
                 </div>
-              </div>
+                <div class="pres-stat-card">
+                  <div class="pres-stat-value">{{ slide.stat.value }}</div>
+                  <div class="pres-stat-label">{{ slide.stat.label }}</div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="pres-stat-card">
+                  <div class="pres-stat-value">{{ slide.stat.value }}</div>
+                  <div class="pres-stat-label">{{ slide.stat.label }}</div>
+                </div>
+                <div class="prob-goal-card">
+                  <div class="prob-goal-icon">🎯</div>
+                  <div class="prob-goal-label">The Goal</div>
+                  <div class="prob-goal-text">Prevention, not only incident response</div>
+                </div>
+                <div class="prob-flow">
+                  <div v-for="step in ['Detect risk early', 'Explain the cause', 'Recommend action', 'Prevent the incident']"
+                    :key="step" class="prob-flow-step">
+                    <span class="prob-flow-dot"></span>{{ step }}
+                  </div>
+                </div>
+              </template>
             </div>
           </div>
 
@@ -297,11 +309,14 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
               <p class="pres-subtitle">{{ slide.subtitle }}</p>
             </div>
             <div class="visits-grid">
-              <div v-for="v in slide.visits" :key="v.company" class="visit-card">
+              <div v-for="v in slide.visits" :key="v.company" class="visit-card" :style="{ borderTopColor: v.color || 'var(--accent-blue)' }">
+                <div v-if="v.photo" class="vc-photo-wrap">
+                  <img :src="v.photo" :alt="v.company" class="vc-photo" />
+                </div>
                 <div class="vc-top">
                   <span class="vc-icon">{{ v.icon }}</span>
                   <div>
-                    <div class="vc-company">{{ v.company }}</div>
+                    <div class="vc-company" :style="{ color: v.color || 'var(--text-primary)' }">{{ v.company }}</div>
                     <div class="vc-tagline">{{ v.tagline }}</div>
                   </div>
                 </div>
@@ -358,46 +373,58 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
             </div>
 
             <div class="pres-slide-right">
-              <div class="pres-stat-card">
-                <div class="pres-stat-value">{{ slide.stat.value }}</div>
-                <div class="pres-stat-label">{{ slide.stat.label }}</div>
-              </div>
+              <template v-if="slide.photo">
+                <div class="slide-photo-panel">
+                  <img :src="slide.photo" :alt="slide.photoCaption || slide.title" class="slide-photo-img" />
+                  <div v-if="slide.photoCaption" class="slide-photo-caption">{{ slide.photoCaption }}</div>
+                </div>
+                <div class="pres-stat-card">
+                  <div class="pres-stat-value">{{ slide.stat.value }}</div>
+                  <div class="pres-stat-label">{{ slide.stat.label }}</div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="pres-stat-card">
+                  <div class="pres-stat-value">{{ slide.stat.value }}</div>
+                  <div class="pres-stat-label">{{ slide.stat.label }}</div>
+                </div>
 
-              <!-- Per-icon visual -->
-              <div class="pres-visual">
-                <template v-if="slide.icon === '⛏️'">
-                  <div class="pres-fact-grid">
-                    <div class="pres-fact"><span>⛏️</span><span>5,000+</span><span>Mining fatalities / year (ILO)</span></div>
-                    <div class="pres-fact"><span>📋</span><span>36</span><span>ICMM member fatalities 2023</span></div>
-                    <div class="pres-fact"><span>💰</span><span>$6B+</span><span>Annual environmental fines</span></div>
-                    <div class="pres-fact"><span>🌍</span><span>60+</span><span>Jurisdictions require ESG reporting</span></div>
-                  </div>
-                </template>
-                <template v-else-if="slide.icon === '⚒️'">
-                  <div class="pres-why-grid">
-                    <div v-for="r in slide.reasons" :key="r.label" class="pwm-item">
-                      <span class="pwm-icon">{{ r.icon }}</span>
-                      <span class="pwm-text">{{ r.label }}</span>
+                <!-- Per-icon visual -->
+                <div class="pres-visual">
+                  <template v-if="slide.icon === '⛏️'">
+                    <div class="pres-fact-grid">
+                      <div class="pres-fact"><span>⛏️</span><span>5,000+</span><span>Mining fatalities / year (ILO)</span></div>
+                      <div class="pres-fact"><span>📋</span><span>36</span><span>ICMM member fatalities 2023</span></div>
+                      <div class="pres-fact"><span>💰</span><span>$6B+</span><span>Annual environmental fines</span></div>
+                      <div class="pres-fact"><span>🌍</span><span>60+</span><span>Jurisdictions require ESG reporting</span></div>
                     </div>
-                  </div>
-                </template>
-                <template v-else-if="slide.icon === '📡'">
-                  <div class="pres-data-sources">
-                    <div v-for="s in ['🚁 6 Drones', '📡 89 Sensors', '⌚ 247 Wearables', '📷 CCTV + CV', '🚛 8 Machines', '🛰️ GPS Tracking']" :key="s" class="pres-ds-item">{{ s }}</div>
-                  </div>
-                </template>
-                <template v-else-if="slide.icon === '🌿'">
-                  <div class="pres-sdg-mini">
-                    <div v-for="n in [3,8,9,12,13,15,16]" :key="n" class="sdg-mini-badge">SDG {{ n }}</div>
-                  </div>
-                </template>
-                <template v-else>
-                  <div class="pres-generic-visual">
-                    <div class="pres-gv-icon">{{ slide.icon }}</div>
-                    <div class="pres-gv-label">{{ slide.subtitle }}</div>
-                  </div>
-                </template>
-              </div>
+                  </template>
+                  <template v-else-if="slide.icon === '⚒️'">
+                    <div class="pres-why-grid">
+                      <div v-for="r in slide.reasons" :key="r.label" class="pwm-item">
+                        <span class="pwm-icon">{{ r.icon }}</span>
+                        <span class="pwm-text">{{ r.label }}</span>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else-if="slide.icon === '📡'">
+                    <div class="pres-data-sources">
+                      <div v-for="s in ['🚁 6 Drones', '📡 89 Sensors', '⌚ 247 Wearables', '📷 CCTV + CV', '🚛 8 Machines', '🛰️ GPS Tracking']" :key="s" class="pres-ds-item">{{ s }}</div>
+                    </div>
+                  </template>
+                  <template v-else-if="slide.icon === '🌿'">
+                    <div class="pres-sdg-mini">
+                      <div v-for="n in [3,8,9,12,13,15,16]" :key="n" class="sdg-mini-badge">SDG {{ n }}</div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="pres-generic-visual">
+                      <div class="pres-gv-icon">{{ slide.icon }}</div>
+                      <div class="pres-gv-label">{{ slide.subtitle }}</div>
+                    </div>
+                  </template>
+                </div>
+              </template>
 
               <div class="pres-nav-hint">← → to navigate · Esc to exit</div>
             </div>
@@ -980,6 +1007,19 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
   border-top: 3px solid var(--accent-blue);
   overflow: hidden;
 }
+.vc-photo-wrap {
+  width: 100%;
+  height: 80px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: -2px;
+}
+.vc-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 .vc-top { display: flex; align-items: flex-start; gap: 8px; }
 .vc-icon { font-size: 1.6rem; flex-shrink: 0; }
 .vc-company { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); }
@@ -1116,6 +1156,33 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
 .pres-gv-icon { font-size: 3rem; margin-bottom: 10px; }
 .pres-gv-label { font-size: 0.85rem; color: var(--text-secondary); }
 .pres-nav-hint { font-size: 0.68rem; color: var(--text-dim); text-align: center; width: 100%; }
+
+/* ─────────────────────────────────────────────────────────────
+   PHOTO PANEL (used in content, problem, visits slides)
+───────────────────────────────────────────────────────────── */
+.slide-photo-panel {
+  width: 100%;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-card);
+  background: var(--bg-card);
+  flex-shrink: 0;
+}
+.slide-photo-img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+}
+.slide-photo-caption {
+  padding: 8px 14px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-base);
+}
 
 /* ── Bottom bar ── */
 .pres-bottombar {
