@@ -729,9 +729,25 @@ export const presentationSlides = [
     route:'/sustainability', routeLabel:'Open Sustainability Dashboard',
   },
 
-  // ── 15 · Business Value ────────────────────────────────────────────────
+  // ── 15 · Noise Exposure (live dashboard) ─────────────────────────────
   {
-    id:14, type:'content',
+    id:14, type:'dashboard',
+    title:'Noise Exposure Intelligence',
+    subtitle:'Preventing noise-induced hearing loss with AI and wearables',
+    content:[
+      '64 workers monitored for noise dose in real time using wearable dosimeters and zone beacons',
+      '6 workers currently above the 85 dBA 8-hour action level — rotation and PPE alerts issued',
+      'AI anomaly detection: Crusher C2 bearing noise pattern changed (78% conf.) — inspection scheduled',
+      'Hierarchy-of-controls recommendations generated automatically from sensor readings and worker dose data',
+    ],
+    stat:{ value:'91%', label:'Hearing PPE compliance — verified in high-noise zones' },
+    icon:'🎧',
+    route:'/noise-exposure', routeLabel:'Open Noise Exposure Dashboard',
+  },
+
+  // ── 16 · Business Value ────────────────────────────────────────────────
+  {
+    id:15, type:'content',
     title:'Business Value Summary',
     subtitle:'Safer workers. Lower impact. Better governance.',
     content:[
@@ -745,9 +761,9 @@ export const presentationSlides = [
     icon:'📊',
   },
 
-  // ── 16 · Thank You ─────────────────────────────────────────────────────
+  // ── 17 · Thank You ─────────────────────────────────────────────────────
   {
-    id:15, type:'thankyou',
+    id:16, type:'thankyou',
     title:'Thank You',
     subtitle:'Harbin Institute of Technology, Shenzhen',
     institution:'HITSZ — AI for Sustainable Development · 2026',
