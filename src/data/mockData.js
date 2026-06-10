@@ -1016,6 +1016,8 @@ export const presentationSlides = [
     ],
     stat:{ value:'347+', label:'Connected safety data points across the site' },
     icon:'📡',
+    photo: 'https://images.unsplash.com/photo-1714596282575-82d224db8c70?w=1200&auto=format&fit=crop&q=80',
+    photoCaption: 'Operations center monitoring live feeds from 347+ connected sensors (Photo: Albert Sukhanov / Unsplash)',
   },
 
   // ── 09 · AI Agents ────────────────────────────────────────────────────
@@ -1032,6 +1034,8 @@ export const presentationSlides = [
     ],
     stat:{ value:'5', label:'Autonomous AI Agents operating across the mine' },
     icon:'🤖',
+    photo: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1200&auto=format&fit=crop&q=80',
+    photoCaption: 'AI Drone Commander Agent on autonomous aerial patrol (Photo: Jason Mavrommatis / Unsplash)',
     agents:[
       { icon:'🔬', name:'Gas Safety Agent',
         case:'Watches GS-11 CH₄ 8.4 ppm at Zone 8 · Predicts threshold breach within 2 hours · Recommends evacuation + ventilation',
@@ -1063,6 +1067,8 @@ export const presentationSlides = [
     icon:'🎓',
     intro:'MineSafe applies AIESD learning by turning AI ethics and sustainable development principles into a practical safety technology concept.',
     stat:{ value:'AIESD', label:'AI for Sustainable Development — HITSZ 2026' },
+    photo: 'https://images.unsplash.com/photo-1473186639016-1451879a06f0?w=1200&auto=format&fit=crop&q=80',
+    photoCaption: 'Real-world AI technology in industrial practice — AIESD principles applied (Photo: Aaron Burden / Unsplash)',
     principles:[
       { icon:'🧑‍💼', title:'Human-centered AI', desc:'AI supports supervisors and safety teams instead of replacing them. Every decision stays with a qualified operator.' },
       { icon:'🔍', title:'Explainable AI (XAI)', desc:'Each prediction shows why it was triggered — factors, confidence score, data sources, and data quality.' },
@@ -1302,6 +1308,8 @@ export const presentationSlides = [
     ],
     stat:{ value:'$2.4M', label:'Estimated annual savings — predictive maintenance' },
     icon:'📊',
+    photo: 'https://images.unsplash.com/photo-1523848309072-c199db53f137?w=1200&auto=format&fit=crop&q=80',
+    photoCaption: 'Industrial mining operations — where AI-driven safety creates measurable business value (Photo: Dominik Vanyi / Unsplash)',
   },
 
   // ── 23 · Takeaway ─────────────────────────────────────────────────────

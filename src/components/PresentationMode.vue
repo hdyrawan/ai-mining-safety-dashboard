@@ -119,6 +119,10 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
                 <div class="pres-stat-value">{{ slide.stat.value }}</div>
                 <div class="pres-stat-label">{{ slide.stat.label }}</div>
               </div>
+              <div v-if="slide.photo" class="slide-photo-panel" style="margin-top:10px">
+                <img :src="slide.photo" :alt="slide.photoCaption || slide.title" class="slide-photo-img" style="height:130px" />
+                <div v-if="slide.photoCaption" class="slide-photo-caption">{{ slide.photoCaption }}</div>
+              </div>
               <div v-if="slide.sources" class="sources-block">
                 <div class="sources-label">Sources</div>
                 <div v-for="src in slide.sources" :key="src.label" class="source-item">
@@ -287,6 +291,10 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
               <div class="pres-stat-card" style="margin-top:16px">
                 <div class="pres-stat-value">{{ slide.stat.value }}</div>
                 <div class="pres-stat-label">{{ slide.stat.label }}</div>
+              </div>
+              <div v-if="slide.photo" class="slide-photo-panel" style="margin-top:10px">
+                <img :src="slide.photo" :alt="slide.photoCaption || slide.title" class="slide-photo-img" style="height:130px" />
+                <div v-if="slide.photoCaption" class="slide-photo-caption">{{ slide.photoCaption }}</div>
               </div>
             </div>
             <div class="train-right">
