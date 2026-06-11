@@ -899,7 +899,7 @@ export const presentationSlides = [
     subtitle:'AI for Sustainable Development — HITSZ 2026',
     icon:'👥',
     members:[
-      { id:'harta',    name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture', slides:[4,5,8,9] },
+      { id:'harta',    name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture', slides:[4,5,8,9,10] },
       { id:'sashi',    name:'Sashi Kumar',         role:'Worker Health & Medical Safety',       slides:[14,15,20] },
       { id:'isabella', name:'Isabella Gbefa',      role:'Health and Safety, ESG Officer',       slides:[2,3,18,19] },
       { id:'shania',   name:'Shania Clauren',      role:'Finance & Business Value',             slides:[21] },
@@ -1360,7 +1360,7 @@ export const presenters = [
     initials: 'HD',
     name: 'Harta Deddy Irawan',
     role: 'Lead Developer & System Architecture',
-    slideIndices: [4, 5, 8, 9],
+    slideIndices: [4, 5, 8, 9, 10],
   },
   {
     id: 'sashi',
