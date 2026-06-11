@@ -1,23 +1,46 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { presentationSlides } from '../data/mockData.js'
+import { presentationSlides, presenters } from '../data/mockData.js'
 
 const router = useRouter()
 const current = ref(0)
-const total = presentationSlides.length
+const selectedPresenter = ref(null)
 
-const slide = computed(() => presentationSlides[current.value])
+const activeSlides = computed(() => {
+  if (!selectedPresenter.value) return presentationSlides
+  return selectedPresenter.value.slideIndices.map(i => presentationSlides[i])
+})
 
-function next() { if (current.value < total - 1) current.value++ }
+const total = computed(() => activeSlides.value.length)
+const slide = computed(() => activeSlides.value[current.value] || {})
+
+function next() { if (current.value < total.value - 1) current.value++ }
 function prev() { if (current.value > 0) current.value-- }
 function goTo(i) { current.value = i }
 function exit() { router.push('/overview') }
 
+function selectPresenter(p) {
+  selectedPresenter.value = p
+  current.value = 0
+}
+
+function backToTeam() {
+  selectedPresenter.value = null
+  current.value = 1
+}
+
+function getPresenter(memberId) {
+  return presenters.find(p => p.id === memberId) || null
+}
+
 function onKey(e) {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next()
   else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prev()
-  else if (e.key === 'Escape') exit()
+  else if (e.key === 'Escape') {
+    if (selectedPresenter.value) backToTeam()
+    else exit()
+  }
 }
 
 onMounted(() => { document.addEventListener('keydown', onKey) })
@@ -25,6 +48,7 @@ onUnmounted(() => { document.removeEventListener('keydown', onKey) })
 
 const accentColor = computed(() => {
   const s = slide.value
+  if (!s) return '#3b82f6'
   if (s.type === 'thankyou' || s.type === 'takeaway') return '#10b981'
   if (s.type === 'training') return '#10b981'
   if (s.icon === '🌿') return '#10b981'
@@ -35,6 +59,7 @@ const accentColor = computed(() => {
 
 const stageBg = computed(() => {
   const s = slide.value
+  if (!s) return '#3b82f608'
   if (s.type === 'title') return 'radial-gradient(ellipse at 60% 40%, #1e3a5f 0%, #0b0e1a 70%)'
   if (s.type === 'team') return 'linear-gradient(135deg, #0f1a2e 0%, #0b0e1a 100%)'
   if (s.type === 'agents') return 'linear-gradient(135deg, #0f1a2e 0%, #0b0e1a 100%)'
@@ -48,6 +73,10 @@ const stageBg = computed(() => {
 })
 
 const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e' }
+
+const isLastPresenterSlide = computed(() =>
+  !!selectedPresenter.value && current.value === total.value - 1
+)
 </script>
 
 <template>
@@ -58,7 +87,7 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
       <div class="pres-brand">⛏️ MineSafe AI System — HITSZ 2026</div>
       <div class="pres-progress-dots">
         <span
-          v-for="(s, i) in presentationSlides" :key="i"
+          v-for="(s, i) in activeSlides" :key="i"
           :class="['pres-dot', { active: i === current, done: i < current }]"
           @click="goTo(i)"
         ></span>
@@ -69,10 +98,27 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
       </div>
     </div>
 
+    <!-- Presenter bar — visible only when a presenter is selected -->
+    <div v-if="selectedPresenter" class="presenter-bar">
+      <div class="pb-left">
+        <div class="pb-avatar">{{ selectedPresenter.initials }}</div>
+        <div class="pb-info">
+          <div class="pb-name">{{ selectedPresenter.name }}</div>
+          <div class="pb-role">{{ selectedPresenter.role }}</div>
+        </div>
+      </div>
+      <div class="pb-center">
+        <span class="pb-label">Presenting slide</span>
+        <span class="pb-pos">{{ current + 1 }} of {{ total }}</span>
+        <span v-if="slide.title" class="pb-slide-title">· {{ slide.title }}</span>
+      </div>
+      <button class="pb-back-btn" @click="backToTeam">← Back to Team</button>
+    </div>
+
     <!-- Stage -->
     <div class="pres-stage" :style="{ background: stageBg }">
       <transition name="slide-fade" mode="out-in">
-        <div :key="current" class="pres-slide">
+        <div :key="current + (selectedPresenter ? selectedPresenter.id : '')" class="pres-slide">
 
           <!-- ── TITLE slide ─────────────────────────────────────── -->
           <div v-if="slide.type === 'title'" class="slide-center-wrap">
@@ -98,16 +144,17 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
             <div class="team-grid">
               <div
                 v-for="m in slide.members" :key="m.name"
-                class="team-card"
-                :class="{ 'team-card-clickable': m.slides && m.slides.length }"
-                @click="m.slides && m.slides.length && goTo(m.slides[0])"
+                class="team-card team-card-clickable"
+                :aria-label="`Open ${m.name} presentation`"
+                role="button"
+                tabindex="0"
+                @click="selectPresenter(getPresenter(m.id))"
+                @keydown.enter="selectPresenter(getPresenter(m.id))"
               >
-                <div class="team-avatar">{{ m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
+                <div class="team-avatar">{{ getPresenter(m.id) ? getPresenter(m.id).initials : m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
                 <div class="team-name">{{ m.name }}</div>
                 <div class="team-role">{{ m.role }}</div>
-                <div v-if="m.slides && m.slides.length" class="team-slides-hint">
-                  Slides {{ m.slides.map(i => i + 1).join(', ') }} · Click to view
-                </div>
+                <div class="team-open-hint">Open presentation →</div>
               </div>
             </div>
             <div class="team-footer">HITSZ — Harbin Institute of Technology, Shenzhen</div>
@@ -442,7 +489,7 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
                 </div>
               </template>
 
-              <div class="pres-nav-hint">← → to navigate · Esc to exit</div>
+              <div class="pres-nav-hint">← → to navigate · Esc to {{ selectedPresenter ? 'return to team' : 'exit' }}</div>
             </div>
           </div>
 
@@ -456,7 +503,21 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
       <div class="pres-progress-bar">
         <div class="pres-progress-fill" :style="{ width: ((current + 1) / total * 100) + '%' }"></div>
       </div>
-      <button class="pres-nav-btn primary" :disabled="current === total - 1" @click="next">Next →</button>
+      <button
+        v-if="isLastPresenterSlide"
+        class="pres-nav-btn primary"
+        @click="backToTeam"
+      >
+        End · Back to Team ↩
+      </button>
+      <button
+        v-else
+        class="pres-nav-btn primary"
+        :disabled="current === total - 1"
+        @click="next"
+      >
+        Next →
+      </button>
     </div>
   </div>
 </template>
@@ -506,6 +567,54 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
   font-family: var(--font-sans);
 }
 .pres-exit-btn:hover { border-color: var(--status-crit); color: var(--status-crit); }
+
+/* ── Presenter Bar ── */
+.presenter-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 28px;
+  background: rgba(59, 130, 246, 0.06);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  flex-shrink: 0;
+}
+.pb-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.pb-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-blue), #6366f1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 800; color: white; letter-spacing: -0.3px;
+  flex-shrink: 0;
+}
+.pb-info { display: flex; flex-direction: column; }
+.pb-name { font-size: 0.8rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+.pb-role { font-size: 0.65rem; color: var(--text-muted); }
+.pb-center { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.pb-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); flex-shrink: 0; }
+.pb-pos { font-size: 0.75rem; font-family: var(--font-mono); color: var(--accent-blue); font-weight: 700; flex-shrink: 0; }
+.pb-slide-title {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pb-back-btn {
+  background: none;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--accent-blue);
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+.pb-back-btn:hover { background: rgba(59, 130, 246, 0.12); border-color: var(--accent-blue); }
 
 /* ── Stage ── */
 .pres-stage {
@@ -685,30 +794,45 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
   text-align: center;
   border-top: 3px solid var(--accent-blue);
 }
-.team-card:hover { border-top-color: var(--slide-accent, var(--accent-blue)); }
-.team-card-clickable { cursor: pointer; transition: all var(--transition-fast); }
-.team-card-clickable:hover { background: rgba(59,130,246,0.06); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(59,130,246,0.15); }
-.team-slides-hint {
-  font-size: 0.65rem;
-  color: var(--accent-blue);
-  opacity: 0.7;
-  font-family: var(--font-mono);
-  border-top: 1px solid var(--border-base);
-  padding-top: 6px;
-  margin-top: 2px;
-  width: 100%;
-  text-align: center;
+.team-card-clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-top-color 0.2s ease, background 0.2s ease;
+  outline: none;
 }
-.team-card-clickable:hover .team-slides-hint { opacity: 1; }
+.team-card-clickable:hover,
+.team-card-clickable:focus-visible {
+  border-top-color: var(--slide-accent, var(--accent-blue));
+  background: rgba(59, 130, 246, 0.07);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.2);
+}
+.team-card-clickable:active { transform: translateY(-1px); }
 .team-avatar {
   width: 56px; height: 56px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent-blue), #6366f1);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.2rem; font-weight: 800; color: white; letter-spacing: -0.5px;
+  transition: box-shadow 0.2s ease;
+}
+.team-card-clickable:hover .team-avatar {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
 }
 .team-name { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
-.team-role { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+.team-role { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; flex: 1; }
+.team-open-hint {
+  font-size: 0.68rem;
+  color: var(--accent-blue);
+  font-weight: 600;
+  opacity: 0.6;
+  border-top: 1px solid var(--border-base);
+  padding-top: 8px;
+  margin-top: 2px;
+  width: 100%;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+.team-card-clickable:hover .team-open-hint { opacity: 1; }
 .team-footer { margin-top: 20px; font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1143,7 +1267,6 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
 .pres-fact span:nth-child(2) { font-size: 1.3rem; font-weight: 800; color: var(--text-primary); font-family: var(--font-mono); }
 .pres-fact span:nth-child(3) { color: var(--text-muted); text-align: center; font-size: 0.68rem; }
 
-/* Why Mining? visual */
 .pres-why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .pwm-item {
   background: var(--bg-card);
@@ -1188,7 +1311,7 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
 .pres-nav-hint { font-size: 0.68rem; color: var(--text-dim); text-align: center; width: 100%; }
 
 /* ─────────────────────────────────────────────────────────────
-   PHOTO PANEL (used in content, problem, visits slides)
+   PHOTO PANEL
 ───────────────────────────────────────────────────────────── */
 .slide-photo-panel {
   width: 100%;

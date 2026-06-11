@@ -899,11 +899,11 @@ export const presentationSlides = [
     subtitle:'AI for Sustainable Development — HITSZ 2026',
     icon:'👥',
     members:[
-      { name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture', slides:[4,5,8,9] },
-      { name:'Sashi Kumar',        role:'Worker Health & Medical Safety',        slides:[14,15,20] },
-      { name:'Isabella Gbefa',     role:'Health and Safety, ESG Officer',        slides:[2,3,18,19] },
-      { name:'Shania Clauren',     role:'Finance & Business Value',              slides:[21] },
-      { name:'Ahmed Shebl',        role:'Data Analytics & AI/ML',               slides:[6,7,13,17] },
+      { id:'harta',    name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture', slides:[4,5,8,9] },
+      { id:'sashi',    name:'Sashi Kumar',         role:'Worker Health & Medical Safety',       slides:[14,15,20] },
+      { id:'isabella', name:'Isabella Gbefa',      role:'Health and Safety, ESG Officer',       slides:[2,3,18,19] },
+      { id:'shania',   name:'Shania Clauren',      role:'Finance & Business Value',             slides:[21] },
+      { id:'ahmed',    name:'Ahmed Shebl',          role:'Data Analytics & AI/ML',              slides:[6,7,13,17] },
     ],
   },
 
@@ -1347,6 +1347,48 @@ export const presentationSlides = [
     institution:'HITSZ — AI for Sustainable Development · 2026',
     icon:'🎓',
     members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed Shebl'],
+  },
+]
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Presenters — maps each team member to their assigned slide indices (0-based)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const presenters = [
+  {
+    id: 'harta',
+    initials: 'HD',
+    name: 'Harta Deddy Irawan',
+    role: 'Lead Developer & System Architecture',
+    slideIndices: [4, 5, 8, 9],
+  },
+  {
+    id: 'sashi',
+    initials: 'SK',
+    name: 'Sashi Kumar',
+    role: 'Worker Health & Medical Safety',
+    slideIndices: [14, 15, 20],
+  },
+  {
+    id: 'isabella',
+    initials: 'IG',
+    name: 'Isabella Gbefa',
+    role: 'Health and Safety, ESG Officer',
+    slideIndices: [2, 3, 18, 19],
+  },
+  {
+    id: 'shania',
+    initials: 'SC',
+    name: 'Shania Clauren',
+    role: 'Finance & Business Value',
+    slideIndices: [21],
+  },
+  {
+    id: 'ahmed',
+    initials: 'AS',
+    name: 'Ahmed Shebl',
+    role: 'Data Analytics & AI/ML',
+    slideIndices: [6, 7, 13, 17],
   },
 ]
 
