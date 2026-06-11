@@ -2,13 +2,18 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from '../store/scenarios.js'
+import { drones } from '../data/mockData.js'
 
 const router = useRouter()
 const critCount = computed(() => store.criticalCount)
+const activeDroneCount = computed(() => drones.filter(d => d.status === 'active').length)
 
-function goPresentation() { router.push('/presentation') }
-function toggleSidebar() { store.toggleSidebar() }
-function toggleTheme() { store.toggleTheme() }
+function goPresentation()    { router.push('/presentation') }
+function toggleSidebar()     { store.toggleSidebar() }
+function toggleTheme()       { store.toggleTheme() }
+function goIncidentResponse(){ router.push('/incident-response') }
+function goWorkerHealth()    { router.push('/worker-health') }
+function goDroneMonitoring() { router.push('/drone-monitoring') }
 </script>
 
 <template>
@@ -31,18 +36,34 @@ function toggleTheme() { store.toggleTheme() }
       </div>
     </div>
     <div class="header-right">
-      <div v-if="critCount > 0" class="alert-count-badge">
+      <button
+        v-if="critCount > 0"
+        class="alert-count-badge chip-nav"
+        data-tooltip="View active critical alerts"
+        aria-label="Open critical alerts"
+        @click="goIncidentResponse"
+      >
         <span class="live-dot crit"></span>
         {{ critCount }} Critical
-      </div>
-      <div class="worker-count">
+      </button>
+      <button
+        class="worker-count chip-nav"
+        data-tooltip="View active worker health and location"
+        aria-label="Open worker health monitor"
+        @click="goWorkerHealth"
+      >
         <span class="count-icon">👷</span>
         <span>247 Active</span>
-      </div>
-      <div class="drone-count">
+      </button>
+      <button
+        class="drone-count chip-nav"
+        data-tooltip="View drone fleet and live feed"
+        aria-label="Open drone monitoring"
+        @click="goDroneMonitoring"
+      >
         <span class="count-icon">🚁</span>
-        <span>3 Drones</span>
-      </div>
+        <span>{{ activeDroneCount }} Drones</span>
+      </button>
       <button class="btn-theme-toggle" @click="toggleTheme" :title="store.theme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'">
         {{ store.theme === 'dark' ? '☀️' : '🌙' }}
       </button>
@@ -102,6 +123,42 @@ function toggleTheme() { store.toggleTheme() }
 }
 
 .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+/* ── Shared chip-nav base ── */
+.chip-nav {
+  position: relative;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition:
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+.chip-nav:active { transform: scale(0.96); }
+
+/* CSS tooltip */
+.chip-nav::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e2a3a;
+  color: var(--text-primary);
+  font-size: 0.68rem;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 4px 9px;
+  border-radius: 5px;
+  border: 1px solid var(--border-card);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 200;
+}
+.chip-nav:hover::after { opacity: 1; }
+
+/* ── Critical chip ── */
 .alert-count-badge {
   display: flex;
   align-items: center;
@@ -115,6 +172,14 @@ function toggleTheme() { store.toggleTheme() }
   border-radius: 20px;
   animation: blink 2s infinite;
 }
+.alert-count-badge:hover {
+  box-shadow: 0 0 10px rgba(239,68,68,0.45);
+  border-color: var(--status-crit);
+  background: rgba(239,68,68,0.18);
+  animation: none;
+}
+
+/* ── Worker / Drone chips ── */
 .worker-count, .drone-count {
   display: flex;
   align-items: center;
@@ -126,6 +191,14 @@ function toggleTheme() { store.toggleTheme() }
   padding: 4px 10px;
   border-radius: 20px;
 }
+.worker-count:hover,
+.drone-count:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 10px rgba(59,130,246,0.35);
+  background: rgba(59,130,246,0.08);
+}
+
 .count-icon { font-size: 0.9rem; }
 .btn-theme-toggle {
   background: var(--bg-card);
