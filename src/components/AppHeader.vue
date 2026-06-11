@@ -136,11 +136,12 @@ function goDroneMonitoring() { router.push('/drone-monitoring') }
 }
 .chip-nav:active { transform: scale(0.96); }
 
-/* CSS tooltip */
+/* CSS tooltip — rendered below the chip so it stays inside the viewport */
 .chip-nav::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 8px);
+  top: calc(100% + 8px);
+  bottom: auto;
   left: 50%;
   transform: translateX(-50%);
   background: #1e2a3a;
@@ -151,12 +152,20 @@ function goDroneMonitoring() { router.push('/drone-monitoring') }
   padding: 4px 9px;
   border-radius: 5px;
   border: 1px solid var(--border-card);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s ease;
-  z-index: 200;
+  z-index: 9999;
 }
 .chip-nav:hover::after { opacity: 1; }
+
+/* Drone chip is rightmost — anchor tooltip to right edge to avoid horizontal overflow */
+.drone-count::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
 
 /* ── Critical chip ── */
 .alert-count-badge {
