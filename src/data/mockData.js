@@ -889,7 +889,7 @@ export const presentationSlides = [
     course:'AI for Sustainable Development',
     year:'2026',
     icon:'⛏️',
-    members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed'],
+    members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed Shebl'],
   },
 
   // ── 02 · Team ──────────────────────────────────────────────────────────
@@ -899,11 +899,11 @@ export const presentationSlides = [
     subtitle:'AI for Sustainable Development — HITSZ 2026',
     icon:'👥',
     members:[
-      { name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture' },
-      { name:'Sashi Kumar',        role:'Worker Health & Medical Safety' },
-      { name:'Isabella Gbefa',     role:'Health and Safety, ESG Officer' },
-      { name:'Shania Clauren',     role:'Finance & Business Value' },
-      { name:'Ahmed',              role:'Data Analytics & AI/ML' },
+      { name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture', slides:[4,5,8,9] },
+      { name:'Sashi Kumar',        role:'Worker Health & Medical Safety',        slides:[14,15,20] },
+      { name:'Isabella Gbefa',     role:'Health and Safety, ESG Officer',        slides:[2,3,18,19] },
+      { name:'Shania Clauren',     role:'Finance & Business Value',              slides:[21] },
+      { name:'Ahmed Shebl',        role:'Data Analytics & AI/ML',               slides:[6,7,13,17] },
     ],
   },
 
@@ -1018,6 +1018,23 @@ export const presentationSlides = [
     icon:'📡',
     photo: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=1200&auto=format&fit=crop&q=80',
     photoCaption: 'Modern command center — real-time monitoring across all zones (Photo: ThisisEngineering / Unsplash)',
+  },
+
+  // ── 08 · Data Architecture ───────────────────────────────────────────
+  {
+    id:21, type:'dashboard',
+    title:'Data Collection, Processing & Storage',
+    subtitle:'End-to-end architecture — from drone to decision',
+    content:[
+      'Drones collect aerial imagery, terrain scans, stockpile data, and safety observations across the site',
+      'Cloud storage centralises all drone-generated data securely and at scale',
+      'Data processing pipeline applies AI: image recognition, object detection, risk scoring, terrain mapping',
+      'Data warehouse stores structured historical records, operational metrics, and environmental readings',
+      'Dashboard presents KPIs, alerts, and insights — connecting raw data to fast decisions',
+    ],
+    stat:{ value:'6', label:'Architecture layers from collection to action' },
+    icon:'🗄️',
+    route:'/data-architecture',
   },
 
   // ── 09 · AI Agents ────────────────────────────────────────────────────
@@ -1294,23 +1311,6 @@ export const presentationSlides = [
     route:'/noise-exposure',
   },
 
-  // ── 22 · Data Architecture ───────────────────────────────────────────
-  {
-    id:21, type:'dashboard',
-    title:'Data Collection, Processing & Storage',
-    subtitle:'End-to-end architecture — from drone to decision',
-    content:[
-      'Drones collect aerial imagery, terrain scans, stockpile data, and safety observations across the site',
-      'Cloud storage centralises all drone-generated data securely and at scale',
-      'Data processing pipeline applies AI: image recognition, object detection, risk scoring, terrain mapping',
-      'Data warehouse stores structured historical records, operational metrics, and environmental readings',
-      'Dashboard presents KPIs, alerts, and insights — connecting raw data to fast decisions',
-    ],
-    stat:{ value:'6', label:'Architecture layers from collection to action' },
-    icon:'🗄️',
-    route:'/data-architecture',
-  },
-
   // ── 23 · Business Value ───────────────────────────────────────────────
   {
     id:22, type:'content',
@@ -1346,7 +1346,7 @@ export const presentationSlides = [
     subtitle:'Harbin Institute of Technology, Shenzhen',
     institution:'HITSZ — AI for Sustainable Development · 2026',
     icon:'🎓',
-    members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed'],
+    members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed Shebl'],
   },
 ]
 

@@ -96,10 +96,18 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
               <p class="pres-subtitle">{{ slide.subtitle }}</p>
             </div>
             <div class="team-grid">
-              <div v-for="m in slide.members" :key="m.name" class="team-card">
+              <div
+                v-for="m in slide.members" :key="m.name"
+                class="team-card"
+                :class="{ 'team-card-clickable': m.slides && m.slides.length }"
+                @click="m.slides && m.slides.length && goTo(m.slides[0])"
+              >
                 <div class="team-avatar">{{ m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
                 <div class="team-name">{{ m.name }}</div>
                 <div class="team-role">{{ m.role }}</div>
+                <div v-if="m.slides && m.slides.length" class="team-slides-hint">
+                  Slides {{ m.slides.map(i => i + 1).join(', ') }} · Click to view
+                </div>
               </div>
             </div>
             <div class="team-footer">HITSZ — Harbin Institute of Technology, Shenzhen</div>
@@ -678,6 +686,20 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
   border-top: 3px solid var(--accent-blue);
 }
 .team-card:hover { border-top-color: var(--slide-accent, var(--accent-blue)); }
+.team-card-clickable { cursor: pointer; transition: all var(--transition-fast); }
+.team-card-clickable:hover { background: rgba(59,130,246,0.06); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(59,130,246,0.15); }
+.team-slides-hint {
+  font-size: 0.65rem;
+  color: var(--accent-blue);
+  opacity: 0.7;
+  font-family: var(--font-mono);
+  border-top: 1px solid var(--border-base);
+  padding-top: 6px;
+  margin-top: 2px;
+  width: 100%;
+  text-align: center;
+}
+.team-card-clickable:hover .team-slides-hint { opacity: 1; }
 .team-avatar {
   width: 56px; height: 56px;
   border-radius: 50%;
