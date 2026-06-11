@@ -1294,9 +1294,26 @@ export const presentationSlides = [
     route:'/noise-exposure',
   },
 
-  // ── 22 · Business Value ───────────────────────────────────────────────
+  // ── 22 · Data Architecture ───────────────────────────────────────────
   {
-    id:21, type:'content',
+    id:21, type:'dashboard',
+    title:'Data Collection, Processing & Storage',
+    subtitle:'End-to-end architecture — from drone to decision',
+    content:[
+      'Drones collect aerial imagery, terrain scans, stockpile data, and safety observations across the site',
+      'Cloud storage centralises all drone-generated data securely and at scale',
+      'Data processing pipeline applies AI: image recognition, object detection, risk scoring, terrain mapping',
+      'Data warehouse stores structured historical records, operational metrics, and environmental readings',
+      'Dashboard presents KPIs, alerts, and insights — connecting raw data to fast decisions',
+    ],
+    stat:{ value:'6', label:'Architecture layers from collection to action' },
+    icon:'🗄️',
+    route:'/data-architecture',
+  },
+
+  // ── 23 · Business Value ───────────────────────────────────────────────
+  {
+    id:22, type:'content',
     title:'Business Value Summary',
     subtitle:'Safer workers. Lower impact. Better governance.',
     content:[

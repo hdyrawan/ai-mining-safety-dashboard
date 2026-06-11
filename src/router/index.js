@@ -12,6 +12,7 @@ const routes = [
   { path: '/incident-response',   component: () => import('../views/IncidentResponseView.vue'),  meta:{ title:'Incident Response' } },
   { path: '/sustainability',      component: () => import('../views/SustainabilityView.vue'),    meta:{ title:'Sustainability Intelligence' } },
   { path: '/noise-exposure',      component: () => import('../views/NoiseExposureView.vue'),     meta:{ title:'Noise Exposure Intelligence' } },
+  { path: '/data-architecture',   component: () => import('../views/DataArchitectureView.vue'),  meta:{ title:'Data Architecture' } },
   { path: '/presentation',        component: () => import('../views/PresentationView.vue'),      meta:{ title:'Presentation Mode', fullscreen: true } },
 ]
 
