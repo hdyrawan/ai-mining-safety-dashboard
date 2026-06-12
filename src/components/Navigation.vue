@@ -18,7 +18,6 @@ const navItems = [
   { path:'/incident-response',  icon:'🚨',  label:'Incident Response',       sub:'Workflow & Dispatch' },
   { path:'/sustainability',     icon:'🌿',  label:'Sustainability Intel.',    sub:'SDG & ESG' },
   { path:'/noise-exposure',       icon:'🎧',  label:'Noise Exposure',           sub:'Hearing & AI Monitoring' },
-  { path:'/data-architecture',   icon:'🗄️', label:'Data Architecture',        sub:'Pipeline & Storage' },
 ]
 
 function isActive(path) { return route.path === path || (path !== '/' && route.path.startsWith(path)) }

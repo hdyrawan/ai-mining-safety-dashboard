@@ -889,7 +889,8 @@ export const presentationSlides = [
     course:'AI for Sustainable Development',
     year:'2026',
     icon:'⛏️',
-    members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed Shebl'],
+    url:'https://ai-mining-safety-dashboard.pages.dev',
+    members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren'],
   },
 
   // ── 02 · Team ──────────────────────────────────────────────────────────
@@ -899,11 +900,10 @@ export const presentationSlides = [
     subtitle:'AI for Sustainable Development — HITSZ 2026',
     icon:'👥',
     members:[
-      { id:'harta',    name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture', slides:[4,5,8,9,10] },
-      { id:'sashi',    name:'Sashi Kumar',         role:'Worker Health & Medical Safety',       slides:[14,15,20] },
-      { id:'isabella', name:'Isabella Gbefa',      role:'Health and Safety, ESG Officer',       slides:[2,3,18,19] },
-      { id:'shania',   name:'Shania Clauren',      role:'Finance & Business Value',             slides:[21] },
-      { id:'ahmed',    name:'Ahmed Shebl',          role:'Data Analytics & AI/ML',              slides:[6,7,13,17] },
+      { id:'harta',    name:'Harta Deddy Irawan', role:'Lead Developer & System Architecture', slides:[0,1,11,12,13] },
+      { id:'sashi',    name:'Sashi Kumar',         role:'Worker Health & Medical Safety',       slides:[14,15,17,18,19] },
+      { id:'isabella', name:'Isabella Gbefa',      role:'Health and Safety, ESG Officer',       slides:[2,3,8,16,20] },
+      { id:'shania',   name:'Shania Clauren',      role:'Finance & Business Value',             slides:[4,5,9,10] },
     ],
   },
 
@@ -1002,42 +1002,7 @@ export const presentationSlides = [
     stat:{ value:'8', label:'Safety domains connected in one command center' },
   },
 
-  // ── 08 · Data Collection Layer ────────────────────────────────────────
-  {
-    id:7, type:'content',
-    title:'The Data Collection Layer',
-    subtitle:'Eyes, ears, and sensors across every square metre of the mine',
-    content:[
-      '6 autonomous drones: aerial surveillance, slope crack detection, environmental patrol',
-      '89 ground sensors: CH₄, CO, H₂S, dust (PM₂.₅/PM₁₀), temperature, humidity, vibration',
-      '247 worker wearables: continuous heart rate, SpO₂, body temperature, fatigue score, fall detection',
-      'CCTV + computer vision: PPE compliance, unauthorised access, congestion monitoring',
-      '8 heavy machines broadcasting GPS, engine telemetry, fuel levels, and proximity alerts in real time',
-    ],
-    stat:{ value:'347+', label:'Connected safety data points across the site' },
-    icon:'📡',
-    photo: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=1200&auto=format&fit=crop&q=80',
-    photoCaption: 'Modern command center — real-time monitoring across all zones (Photo: ThisisEngineering / Unsplash)',
-  },
-
-  // ── 08 · Data Architecture ───────────────────────────────────────────
-  {
-    id:21, type:'dashboard',
-    title:'Data Collection, Processing & Storage',
-    subtitle:'End-to-end architecture — from drone to decision',
-    content:[
-      'Drones collect aerial imagery, terrain scans, stockpile data, and safety observations across the site',
-      'Cloud storage centralises all drone-generated data securely and at scale',
-      'Data processing pipeline applies AI: image recognition, object detection, risk scoring, terrain mapping',
-      'Data warehouse stores structured historical records, operational metrics, and environmental readings',
-      'Dashboard presents KPIs, alerts, and insights — connecting raw data to fast decisions',
-    ],
-    stat:{ value:'6', label:'Architecture layers from collection to action' },
-    icon:'🗄️',
-    route:'/data-architecture',
-  },
-
-  // ── 09 · AI Agents ────────────────────────────────────────────────────
+  // ── 08 · AI Agents ────────────────────────────────────────────────────
   {
     id:8, type:'agents',
     title:'AI Agents in the Analytics Layer',
@@ -1346,7 +1311,7 @@ export const presentationSlides = [
     subtitle:'Harbin Institute of Technology, Shenzhen',
     institution:'HITSZ — AI for Sustainable Development · 2026',
     icon:'🎓',
-    members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren','Ahmed Shebl'],
+    members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren'],
   },
 ]
 
@@ -1360,35 +1325,28 @@ export const presenters = [
     initials: 'HD',
     name: 'Harta Deddy Irawan',
     role: 'Lead Developer & System Architecture',
-    slideIndices: [4, 5, 8, 9, 10],
+    slideIndices: [0, 1, 11, 12, 13],
   },
   {
     id: 'sashi',
     initials: 'SK',
     name: 'Sashi Kumar',
     role: 'Worker Health & Medical Safety',
-    slideIndices: [14, 15, 20],
+    slideIndices: [14, 15, 17, 18, 19],
   },
   {
     id: 'isabella',
     initials: 'IG',
     name: 'Isabella Gbefa',
     role: 'Health and Safety, ESG Officer',
-    slideIndices: [2, 3, 18, 19],
+    slideIndices: [2, 3, 8, 16, 20],
   },
   {
     id: 'shania',
     initials: 'SC',
     name: 'Shania Clauren',
     role: 'Finance & Business Value',
-    slideIndices: [21],
-  },
-  {
-    id: 'ahmed',
-    initials: 'AS',
-    name: 'Ahmed Shebl',
-    role: 'Data Analytics & AI/ML',
-    slideIndices: [6, 7, 13, 17],
+    slideIndices: [4, 5, 9, 10],
   },
 ]
 

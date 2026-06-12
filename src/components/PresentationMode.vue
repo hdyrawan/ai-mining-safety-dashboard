@@ -132,6 +132,13 @@ const isLastPresenterSlide = computed(() =>
               <span v-for="m in slide.members" :key="m" class="title-member">{{ m }}</span>
             </div>
             <div class="title-year">{{ slide.year }}</div>
+            <div v-if="slide.url" class="title-access">
+              <div class="title-access-label">Scan or visit to access the live dashboard</div>
+              <div class="title-access-row">
+                <img class="title-qr" :src="`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${slide.url}&bgcolor=192030&color=e2e8f0`" :alt="slide.url" />
+                <span class="title-url">{{ slide.url }}</span>
+              </div>
+            </div>
           </div>
 
           <!-- ── TEAM slide ──────────────────────────────────────── -->
@@ -761,6 +768,40 @@ const isLastPresenterSlide = computed(() =>
   font-size: 0.75rem;
   color: var(--text-dim);
   letter-spacing: 0.2em;
+}
+.title-access {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.title-access-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+.title-access-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+}
+.title-qr {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  display: block;
+}
+.title-url {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-blue);
+  letter-spacing: 0.04em;
 }
 
 /* ─────────────────────────────────────────────────────────────
