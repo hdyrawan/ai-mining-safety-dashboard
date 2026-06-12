@@ -813,15 +813,21 @@ const isLastPresenterSlide = computed(() =>
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
 }
-.team-header { text-align: center; margin-bottom: 24px; }
+.team-header { text-align: center; margin-bottom: 32px; }
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
-  width: 100%;
-  max-width: 1100px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
+  gap: 28px;
+  justify-content: center;
+  width: min(100%, 1400px);
+  margin: 0 auto;
+}
+@media (max-width: 1400px) {
+  .team-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+  }
 }
 .team-card {
   background: var(--bg-card);
