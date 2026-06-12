@@ -12,6 +12,7 @@ const activeVideoId = ref(null)
 const videoReadyId = ref(null)
 const fallbackWavingId = ref(null)
 const videoClickCounts = ref({})
+const videoRefs = ref({})
 const waveTimers = {}
 
 const activeSlides = computed(() => {
@@ -50,6 +51,11 @@ function getInitials(id, name) {
   return p ? p.initials : name.split(' ').map(w => w[0]).slice(0, 2).join('')
 }
 
+function setVideoRef(el, id) {
+  if (el) videoRefs.value[id] = el
+  else delete videoRefs.value[id]
+}
+
 function triggerFallback(id) {
   fallbackWavingId.value = id
   clearTimeout(waveTimers['fb_' + id])
@@ -60,38 +66,39 @@ function triggerFallback(id) {
 
 function triggerWave(presenter) {
   if (!presenter) return
-  // Reset any prior state for this presenter
+  // Stop any current video for this presenter
   clearTimeout(waveTimers[presenter.id])
-  if (videoReadyId.value === presenter.id) videoReadyId.value = null
-  if (activeVideoId.value === presenter.id) activeVideoId.value = null
-  if (fallbackWavingId.value === presenter.id) fallbackWavingId.value = null
+  videoReadyId.value = null
+  activeVideoId.value = null
+  fallbackWavingId.value = null
 
   const hasVideo = !!(presenter.waveVideoSrc && !videoErrors.value[presenter.id])
-  if (hasVideo) {
-    videoClickCounts.value = { ...videoClickCounts.value, [presenter.id]: (videoClickCounts.value[presenter.id] || 0) + 1 }
-    activeVideoId.value = presenter.id
-    // Safety: if canplay never fires in 3s, fall back
-    waveTimers[presenter.id] = setTimeout(() => {
-      if (activeVideoId.value === presenter.id && videoReadyId.value !== presenter.id) {
-        activeVideoId.value = null
-        triggerFallback(presenter.id)
-      }
-    }, 3000)
-  } else {
-    triggerFallback(presenter.id)
-  }
-}
+  if (!hasVideo) { triggerFallback(presenter.id); return }
 
-function onVideoCanPlay(id) {
-  if (activeVideoId.value === id) {
-    clearTimeout(waveTimers[id])
-    videoReadyId.value = id
-  }
+  // Increment key so Vue creates a fresh video element on re-click
+  videoClickCounts.value = { ...videoClickCounts.value, [presenter.id]: (videoClickCounts.value[presenter.id] || 0) + 1 }
+  activeVideoId.value = presenter.id
+
+  console.warn('Trying to play video:', presenter.waveVideoSrc)
+
+  nextTick(() => {
+    const video = videoRefs.value[presenter.id]
+    if (!video) { activeVideoId.value = null; triggerFallback(presenter.id); return }
+    const id = presenter.id
+    video.play().then(() => {
+      if (activeVideoId.value === id) videoReadyId.value = id
+    }).catch(err => {
+      console.warn(`Autoplay blocked for ${presenter.name}:`, err)
+      if (activeVideoId.value === id) { activeVideoId.value = null; triggerFallback(id) }
+    })
+  })
 }
 
 function onVideoEnded(id) {
-  videoReadyId.value = null
-  activeVideoId.value = null
+  if (activeVideoId.value === id) {
+    videoReadyId.value = null
+    activeVideoId.value = null
+  }
 }
 
 function onVideoError(id) {
@@ -248,35 +255,28 @@ function goToNextPresenter() {
                   :class="{ 'avatar-waving': fallbackWavingId === m.id }"
                 >
                   <div class="media-circle">
-                    <!-- Photo: always rendered; fades out when video is ready -->
+                    <!-- Photo: ALWAYS visible at z-index 1 — video overlays it when playing -->
                     <img
                       v-if="getPresenter(m.id)?.photoSrc && !imageError[m.id]"
                       :src="getPresenter(m.id).photoSrc"
                       :alt="m.name"
-                      class="media-fill"
-                      :class="{ 'media-hidden': videoReadyId === m.id }"
+                      class="media-photo"
                       @error="onPhotoError(m.id)"
                     />
-                    <div
-                      v-else
-                      class="media-initials"
-                      :class="{ 'media-hidden': videoReadyId === m.id }"
-                    >{{ getInitials(m.id, m.name) }}</div>
-                    <!-- Video: in DOM when clicked, visible only after canplay -->
+                    <div v-else class="media-initials">{{ getInitials(m.id, m.name) }}</div>
+                    <!-- Video: z-index 2, starts transparent, fades in after play() resolves -->
                     <video
                       v-if="activeVideoId === m.id && !videoErrors[m.id]"
                       :key="'v-' + m.id + '-' + (videoClickCounts[m.id] || 0)"
-                      class="media-fill"
-                      :class="{ 'media-hidden': videoReadyId !== m.id }"
-                      autoplay
+                      :ref="el => setVideoRef(el, m.id)"
+                      :src="getPresenter(m.id).waveVideoSrc"
+                      class="media-video"
+                      :class="{ 'media-video-ready': videoReadyId === m.id }"
                       muted
                       playsinline
-                      @canplay="onVideoCanPlay(m.id)"
                       @ended="onVideoEnded(m.id)"
                       @error="onVideoError(m.id)"
-                    >
-                      <source :src="getPresenter(m.id).waveVideoSrc" type="video/mp4" />
-                    </video>
+                    />
                     <!-- Wave badge for CSS fallback only -->
                     <div v-if="fallbackWavingId === m.id" class="wave-badge">👋</div>
                   </div>
@@ -1024,22 +1024,19 @@ function goToNextPresenter() {
   box-shadow: 0 0 32px rgba(59, 130, 246, 0.4);
   background: rgba(37, 99, 235, 0.2);
 }
-.media-fill {
+.media-photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: opacity 0.2s ease;
-}
-.media-hidden {
-  opacity: 0;
-  pointer-events: none;
+  z-index: 1;
 }
 .media-initials {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1048,7 +1045,20 @@ function goToNextPresenter() {
   color: white;
   letter-spacing: -0.5px;
   background: linear-gradient(135deg, var(--accent-blue), #6366f1);
-  transition: opacity 0.2s ease;
+}
+.media-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.media-video-ready {
+  opacity: 1;
 }
 @media (max-width: 1200px) {
   .media-circle {
