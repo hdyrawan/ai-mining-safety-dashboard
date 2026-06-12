@@ -692,6 +692,24 @@ function goToNextPresenter() {
                 ></span>
               </div>
 
+              <!-- Download full-quality button -->
+              <a
+                v-if="slide.downloadSrc"
+                :href="slide.downloadSrc"
+                download="Thank you video.MP4"
+                class="ty-download-btn"
+                aria-label="Download full quality thank you video"
+                @click.stop
+              >
+                <svg class="ty-dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download Full Quality
+                <span class="ty-dl-size">55 MB</span>
+              </a>
+
               <!-- Post-watch message -->
               <transition name="watched-fade">
                 <div v-if="thankYouWatched" class="ty-watched-msg">
@@ -2086,6 +2104,41 @@ function goToNextPresenter() {
 .watched-fade-leave-active { transition: opacity 0.4s ease; }
 .watched-fade-enter-from,
 .watched-fade-leave-to { opacity: 0; }
+
+/* ── Download button ── */
+.ty-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.07);
+  color: var(--accent-blue);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.ty-download-btn:hover {
+  background: rgba(59, 130, 246, 0.16);
+  border-color: rgba(59, 130, 246, 0.65);
+  color: #93c5fd;
+}
+.ty-dl-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+.ty-dl-size {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  opacity: 0.65;
+  margin-left: 2px;
+}
 
 /* ── Footer ── */
 .ty-video-footer {

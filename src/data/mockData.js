@@ -1321,6 +1321,7 @@ export const presentationSlides = [
     subtitle:'AI for Sustainable Development — HITSZ 2026',
     closing:'From data, safety, and sustainability to smarter mining decisions.',
     videoSrc:'/images/mining/thank-you-video.mp4',
+    downloadSrc:'https://raw.githubusercontent.com/hdyrawan/ai-mining-safety-dashboard/3ee1a6f/public/images/mining/Thank%20you%20video.MP4',
     footer:'MineSafe AI System · HITSZ 2026',
   },
 ]
