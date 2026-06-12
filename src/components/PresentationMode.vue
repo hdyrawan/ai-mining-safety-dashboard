@@ -706,8 +706,7 @@ function goToNextPresenter() {
                   <polyline points="7 10 12 15 17 10"/>
                   <line x1="12" y1="15" x2="12" y2="3"/>
                 </svg>
-                Download Full Quality
-                <span class="ty-dl-size">55 MB</span>
+                Download
               </a>
 
               <!-- Post-watch message -->
@@ -2132,12 +2131,6 @@ function goToNextPresenter() {
   width: 15px;
   height: 15px;
   flex-shrink: 0;
-}
-.ty-dl-size {
-  font-size: 0.68rem;
-  font-family: var(--font-mono);
-  opacity: 0.65;
-  margin-left: 2px;
 }
 
 /* ── Footer ── */
