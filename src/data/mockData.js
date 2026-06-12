@@ -1313,6 +1313,16 @@ export const presentationSlides = [
     icon:'🎓',
     members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren'],
   },
+
+  // ── 25 · Thank You Video ──────────────────────────────────────────────
+  {
+    id:24, type:'videothankyou',
+    title:'Thank You',
+    subtitle:'AI for Sustainable Development — HITSZ 2026',
+    closing:'From data, safety, and sustainability to smarter mining decisions.',
+    videoSrc:'/images/mining/Thank%20you%20video.MP4',
+    footer:'MineSafe AI System · HITSZ 2026',
+  },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1339,7 +1349,7 @@ export const presenters = [
     flag: '🇳🇵',
     country: 'Nepal',
     photoSrc: '/images/mining/sashi.png',
-    waveVideoSrc: '/images/mining/sashi-intro-video-compress.mp4',
+    waveVideoSrc: '/images/mining/sashi-intro-new.mp4',
     slideIndices: [12, 14, 15, 17, 18, 19],
   },
   {
@@ -1361,6 +1371,7 @@ export const presenters = [
     flag: '🇮🇩',
     country: 'Indonesia',
     photoSrc: '/images/mining/shania.png',
+    waveVideoSrc: '/images/mining/shania-intro-video.mp4',
     slideIndices: [4, 5, 9, 10],
   },
 ]

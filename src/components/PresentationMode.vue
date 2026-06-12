@@ -15,6 +15,14 @@ const videoClickCounts = ref({})
 const videoRefs = ref({})
 const waveTimers = {}
 
+// Thank You video overlay state
+const isThankYouVideoOpen = ref(false)
+const thankYouVideoRef = ref(null)
+const thankYouContainerRef = ref(null)
+const thankYouVideoError = ref(false)
+const thankYouWatched = ref(false)
+let thankYouWatchedTimer = null
+
 const activeSlides = computed(() => {
   if (!selectedPresenter.value) return presentationSlides
   return selectedPresenter.value.slideIndices.map(i => presentationSlides[i])
@@ -116,10 +124,59 @@ function stopWave(id) {
   if (fallbackWavingId.value === id) fallbackWavingId.value = null
 }
 
+function openThankYouVideo() {
+  isThankYouVideoOpen.value = true
+  nextTick(() => {
+    const video = thankYouVideoRef.value
+    if (!video) return
+    video.play().catch(() => {})
+    const container = thankYouContainerRef.value
+    if (container?.requestFullscreen) {
+      container.requestFullscreen().catch(() => {})
+    }
+  })
+}
+
+function closeThankYouVideo() {
+  const video = thankYouVideoRef.value
+  if (video) { video.pause(); video.currentTime = 0 }
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {})
+  isThankYouVideoOpen.value = false
+  thankYouWatched.value = true
+  clearTimeout(thankYouWatchedTimer)
+  thankYouWatchedTimer = setTimeout(() => { thankYouWatched.value = false }, 3200)
+}
+
+function onThankYouVideoEnded() {
+  closeThankYouVideo()
+}
+
+function particleStyle(i) {
+  const positions = [
+    { x:8,  y:15 }, { x:92, y:18 }, { x:5,  y:62 },
+    { x:96, y:55 }, { x:22, y:87 }, { x:82, y:82 },
+    { x:47, y:4  }, { x:54, y:93 }, { x:33, y:42 },
+    { x:72, y:32 }, { x:14, y:48 }, { x:86, y:8  },
+  ]
+  const pos = positions[(i - 1) % positions.length]
+  const size = 2 + ((i * 7) % 5)
+  return {
+    left: pos.x + '%',
+    top: pos.y + '%',
+    width: size + 'px',
+    height: size + 'px',
+    animationDelay: ((i - 1) * 0.45) + 's',
+    animationDuration: (3 + ((i * 3) % 4)) + 's',
+  }
+}
+
 function onKey(e) {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next()
-  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prev()
-  else if (e.key === 'Escape') {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    if (!isThankYouVideoOpen.value) next()
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    if (!isThankYouVideoOpen.value) prev()
+  } else if (e.key === 'Escape') {
+    if (isThankYouVideoOpen.value) { closeThankYouVideo(); return }
     if (selectedPresenter.value) backToTeam()
     else exit()
   }
@@ -129,12 +186,14 @@ onMounted(() => { document.addEventListener('keydown', onKey) })
 onUnmounted(() => {
   document.removeEventListener('keydown', onKey)
   Object.values(waveTimers).forEach(t => clearTimeout(t))
+  clearTimeout(thankYouWatchedTimer)
 })
 
 const accentColor = computed(() => {
   const s = slide.value
   if (!s) return '#3b82f6'
   if (s.type === 'thankyou' || s.type === 'takeaway') return '#10b981'
+  if (s.type === 'videothankyou') return '#3b82f6'
   if (s.type === 'training') return '#10b981'
   if (s.icon === '🌿') return '#10b981'
   if (s.icon === '🚨') return '#ef4444'
@@ -149,6 +208,7 @@ const stageBg = computed(() => {
   if (s.type === 'team') return 'linear-gradient(135deg, #0f1a2e 0%, #0b0e1a 100%)'
   if (s.type === 'agents') return 'linear-gradient(135deg, #0f1a2e 0%, #0b0e1a 100%)'
   if (s.type === 'thankyou' || s.type === 'takeaway') return 'radial-gradient(ellipse at 50% 50%, #0d2318 0%, #0b0e1a 70%)'
+  if (s.type === 'videothankyou') return 'radial-gradient(ellipse at 50% 30%, #081828 0%, #0b0e1a 80%)'
   if (s.type === 'training') return 'radial-gradient(ellipse at 30% 60%, #091f13 0%, #0b0e1a 70%)'
   if (s.type === 'visits') return 'linear-gradient(135deg, #0e1624 0%, #0b0e1a 100%)'
   if (s.icon === '🌿') return '#10b98108'
@@ -556,6 +616,94 @@ function goToNextPresenter() {
             <div class="ty-project">MineSafe AI System · AI-Driven Mining Safety &amp; Sustainability</div>
           </div>
 
+          <!-- ── VIDEO THANK YOU slide ──────────────────────────── -->
+          <div v-else-if="slide.type === 'videothankyou'" class="ty-video-slide">
+            <!-- Floating particles -->
+            <div class="ty-particles" aria-hidden="true">
+              <span v-for="i in 12" :key="i" class="ty-particle" :style="particleStyle(i)"></span>
+            </div>
+
+            <div class="ty-video-content">
+              <!-- Header text -->
+              <div class="ty-video-eyebrow">Closing Ceremony</div>
+              <h1 class="ty-video-title">{{ slide.title }}</h1>
+              <p class="ty-video-subtitle">{{ slide.subtitle }}</p>
+              <p class="ty-video-closing">{{ slide.closing }}</p>
+
+              <!-- Video preview card -->
+              <div
+                class="ty-video-card"
+                role="button"
+                tabindex="0"
+                aria-label="Open thank you video in fullscreen"
+                @click="openThankYouVideo"
+                @keydown.enter="openThankYouVideo"
+                @keydown.space.prevent="openThankYouVideo"
+              >
+                <!-- Muted preview video -->
+                <video
+                  v-if="!thankYouVideoError"
+                  class="ty-preview-video"
+                  :src="slide.videoSrc"
+                  muted
+                  playsinline
+                  autoplay
+                  loop
+                  preload="metadata"
+                  @error="thankYouVideoError = true"
+                ></video>
+
+                <!-- Error fallback -->
+                <div v-if="thankYouVideoError" class="ty-video-fallback">
+                  <div class="ty-fallback-icon">🎬</div>
+                  <div class="ty-fallback-text">Thank-you video not found</div>
+                  <div class="ty-fallback-hint">Add the video file to /public/images/mining</div>
+                </div>
+
+                <!-- Dark cinematic overlay -->
+                <div class="ty-video-overlay" aria-hidden="true"></div>
+
+                <!-- Animated light sweep -->
+                <div class="ty-light-sweep" aria-hidden="true"></div>
+
+                <!-- Play button (centered) -->
+                <div class="ty-play-center" aria-hidden="true">
+                  <div class="ty-play-ring"></div>
+                  <div class="ty-play-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Card labels -->
+                <div class="ty-card-labels" aria-hidden="true">
+                  <div class="ty-card-main-label">Watch Team Memory Video</div>
+                  <div class="ty-card-hint">Click to open fullscreen &nbsp;·&nbsp; ♪ See You Again</div>
+                </div>
+              </div>
+
+              <!-- Memory timeline dots -->
+              <div class="ty-timeline-row" aria-hidden="true">
+                <span
+                  v-for="j in 9" :key="j"
+                  class="ty-tl-dot"
+                  :style="{ animationDelay: (j * 0.18) + 's' }"
+                ></span>
+              </div>
+
+              <!-- Post-watch message -->
+              <transition name="watched-fade">
+                <div v-if="thankYouWatched" class="ty-watched-msg">
+                  Thank you for watching ✨
+                </div>
+              </transition>
+
+              <!-- Footer -->
+              <div class="ty-video-footer">{{ slide.footer }}</div>
+            </div>
+          </div>
+
           <!-- ── CONTENT slide (default) ────────────────────────── -->
           <div v-else class="pres-slide-inner">
             <div class="pres-slide-left">
@@ -651,13 +799,46 @@ function goToNextPresenter() {
       <button
         v-else
         class="pres-nav-btn primary"
-        :disabled="current === total - 1"
-        @click="next"
+        @click="current === total - 1 ? exit() : next()"
       >
-        Next →
+        {{ current === total - 1 ? 'Finish ✓' : 'Next →' }}
       </button>
     </div>
   </div>
+
+  <!-- Fullscreen thank you video overlay -->
+  <Teleport to="body">
+    <div
+      v-if="isThankYouVideoOpen"
+      class="ty-fullscreen-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Thank you team memory video"
+      @click.self="closeThankYouVideo"
+    >
+      <div class="ty-fullscreen-container" ref="thankYouContainerRef">
+        <div class="ty-fullscreen-header">
+          <div class="ty-fs-info">
+            <div class="ty-fs-title">Thank You — Team Memory Video</div>
+            <div class="ty-fs-caption">♪ See You Again</div>
+          </div>
+          <button
+            class="ty-close-btn"
+            aria-label="Close thank you video"
+            @click="closeThankYouVideo"
+          >✕</button>
+        </div>
+        <video
+          ref="thankYouVideoRef"
+          :src="slide.videoSrc"
+          class="ty-fullscreen-video"
+          controls
+          playsinline
+          @ended="onThankYouVideoEnded"
+        ></video>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -1632,6 +1813,376 @@ function goToNextPresenter() {
 @keyframes fade-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
 
 /* ─────────────────────────────────────────────────────────────
+   VIDEO THANK YOU slide
+───────────────────────────────────────────────────────────── */
+.ty-video-slide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Floating particles ── */
+.ty-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.ty-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.35);
+  animation: ty-particle-float linear infinite;
+}
+@keyframes ty-particle-float {
+  0%   { transform: translateY(0) scale(1); opacity: 0.7; }
+  60%  { opacity: 0.25; }
+  100% { transform: translateY(-55px) scale(0.5); opacity: 0; }
+}
+
+/* ── Content ── */
+.ty-video-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 980px);
+  text-align: center;
+  padding: 0 20px;
+}
+
+.ty-video-eyebrow {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--accent-blue);
+  font-weight: 700;
+}
+.ty-video-title {
+  font-size: 3.6rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -2px;
+  line-height: 1;
+  margin: 0;
+}
+.ty-video-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+.ty-video-closing {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 540px;
+}
+
+/* ── Video preview card ── */
+.ty-video-card {
+  position: relative;
+  width: min(100%, 820px);
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  box-shadow:
+    0 0 40px rgba(59, 130, 246, 0.25),
+    inset 0 0 28px rgba(59, 130, 246, 0.08);
+  cursor: pointer;
+  background: #04090f;
+  outline: none;
+  transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+.ty-video-card:hover,
+.ty-video-card:focus-visible {
+  transform: translateY(-5px) scale(1.012);
+  border-color: rgba(59, 130, 246, 0.85);
+  box-shadow:
+    0 0 64px rgba(59, 130, 246, 0.42),
+    0 24px 48px rgba(0, 0, 0, 0.6),
+    inset 0 0 32px rgba(59, 130, 246, 0.14);
+}
+
+.ty-preview-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+/* Fallback when video file is missing */
+.ty-video-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg-card);
+  z-index: 1;
+}
+.ty-fallback-icon { font-size: 2.4rem; }
+.ty-fallback-text { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+.ty-fallback-hint { font-size: 0.65rem; color: var(--text-muted); }
+
+/* Dark cinematic overlay */
+.ty-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(4, 10, 22, 0.72) 0%,
+    rgba(4, 10, 22, 0.44) 45%,
+    rgba(4, 10, 22, 0.72) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Animated light sweep */
+.ty-light-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ty-light-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(59, 130, 246, 0.07) 50%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  animation: ty-sweep 3.8s ease-in-out infinite;
+}
+@keyframes ty-sweep {
+  0%   { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Play button ── */
+.ty-play-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.ty-play-ring {
+  position: absolute;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(59, 130, 246, 0.45);
+  animation: ty-pulse-ring 2.2s ease-in-out infinite;
+}
+@keyframes ty-pulse-ring {
+  0%, 100% { transform: scale(1);    opacity: 0.65; }
+  50%       { transform: scale(1.18); opacity: 0.18; }
+}
+.ty-play-btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 30px rgba(59, 130, 246, 0.55),
+    0 0 0 3px rgba(59, 130, 246, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.ty-video-card:hover .ty-play-btn,
+.ty-video-card:focus-visible .ty-play-btn {
+  transform: scale(1.12);
+  background: rgba(59, 130, 246, 1);
+  box-shadow:
+    0 0 48px rgba(59, 130, 246, 0.72),
+    0 0 0 5px rgba(59, 130, 246, 0.28);
+}
+.ty-play-btn svg {
+  width: 30px;
+  height: 30px;
+  color: white;
+  margin-left: 4px;
+}
+
+/* ── Card bottom labels ── */
+.ty-card-labels {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 4;
+  pointer-events: none;
+}
+.ty-card-main-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+}
+.ty-card-hint {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Memory timeline dots (below card) ── */
+.ty-timeline-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.ty-tl-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.4);
+  animation: ty-dot-pulse 1.6s ease-in-out infinite;
+}
+@keyframes ty-dot-pulse {
+  0%, 100% { opacity: 0.25; transform: scale(1);   background: rgba(59, 130, 246, 0.4); }
+  50%       { opacity: 1;    transform: scale(1.45); background: rgba(59, 130, 246, 1); }
+}
+
+/* ── Post-watch message ── */
+.ty-watched-msg {
+  font-size: 0.88rem;
+  color: var(--sustain-green);
+  font-weight: 600;
+  font-style: italic;
+  min-height: 1.4em;
+}
+.watched-fade-enter-active { transition: opacity 0.5s ease; }
+.watched-fade-leave-active { transition: opacity 0.4s ease; }
+.watched-fade-enter-from,
+.watched-fade-leave-to { opacity: 0; }
+
+/* ── Footer ── */
+.ty-video-footer {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FULLSCREEN VIDEO OVERLAY  (teleported to body)
+───────────────────────────────────────────────────────────── */
+.ty-fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(2, 5, 18, 0.96);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding:
+    max(24px, env(safe-area-inset-top, 24px))
+    24px
+    max(24px, env(safe-area-inset-bottom, 24px));
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: ty-overlay-in 0.2s ease forwards;
+}
+@keyframes ty-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.ty-fullscreen-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  width: min(100%, 1200px);
+}
+
+.ty-fullscreen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px;
+}
+.ty-fs-info { flex: 1; min-width: 0; }
+.ty-fs-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  font-family: var(--font-sans);
+}
+.ty-fs-caption {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 1px;
+}
+.ty-close-btn {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+  margin-right: max(0px, env(safe-area-inset-right, 0px));
+}
+.ty-close-btn:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.ty-fullscreen-video {
+  width: 100%;
+  max-height: 82dvh;
+  border-radius: 14px;
+  box-shadow:
+    0 0 48px rgba(59, 130, 246, 0.28),
+    0 20px 60px rgba(0, 0, 0, 0.8);
+  background: #000;
+  display: block;
+}
+
+/* ─────────────────────────────────────────────────────────────
    MOBILE (≤ 768px) — preserve desktop, fix iPhone Safari
 ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
@@ -1693,7 +2244,8 @@ function goToNextPresenter() {
   .slide-comparison-wrap,
   .slide-solution-wrap,
   .slide-training-wrap,
-  .slide-visits-wrap {
+  .slide-visits-wrap,
+  .ty-video-slide {
     height: auto;
     min-height: 0;
     overflow: visible;
@@ -1765,5 +2317,22 @@ function goToNextPresenter() {
     min-width: 0;
   }
   .pres-progress-bar { min-width: 40px; }
+
+  /* Video thank you slide — mobile */
+  .ty-video-slide { align-items: flex-start; padding-top: 12px; }
+  .ty-video-content { gap: 10px; padding: 0 8px; }
+  .ty-video-title  { font-size: 2.2rem; letter-spacing: -1px; }
+  .ty-video-subtitle { font-size: 0.82rem; }
+  .ty-video-closing { font-size: 0.72rem; }
+  .ty-video-card { border-radius: 14px; }
+  .ty-play-btn  { width: 56px; height: 56px; }
+  .ty-play-btn svg { width: 24px; height: 24px; }
+  .ty-play-ring { width: 76px; height: 76px; }
+  .ty-card-main-label { font-size: 0.72rem; }
+
+  /* Fullscreen overlay — mobile */
+  .ty-fullscreen-video { max-height: 80dvh; border-radius: 8px; }
+  .ty-fullscreen-header { flex-wrap: wrap; }
+  .ty-fs-title { font-size: 0.78rem; }
 }
 </style>
