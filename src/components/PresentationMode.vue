@@ -110,6 +110,12 @@ function onVideoError(id) {
   triggerFallback(id)
 }
 
+function stopWave(id) {
+  clearTimeout(waveTimers['fb_' + id])
+  if (activeVideoId.value === id) { videoReadyId.value = null; activeVideoId.value = null }
+  if (fallbackWavingId.value === id) fallbackWavingId.value = null
+}
+
 function onKey(e) {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next()
   else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prev()
@@ -244,10 +250,11 @@ function goToNextPresenter() {
               <div
                 v-for="m in slide.members" :key="m.name"
                 class="team-card team-card-clickable"
-                :aria-label="`Play ${m.name} greeting`"
+                :aria-label="`${m.name} — ${m.role}`"
                 role="button"
                 tabindex="0"
-                @click="triggerWave(getPresenter(m.id))"
+                @mouseenter="triggerWave(getPresenter(m.id))"
+                @mouseleave="stopWave(m.id)"
                 @keydown.enter="triggerWave(getPresenter(m.id))"
               >
                 <div
