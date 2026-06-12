@@ -889,7 +889,7 @@ export const presentationSlides = [
     course:'AI for Sustainable Development',
     year:'2026',
     icon:'⛏️',
-    url:'https://ai-mining-safety-dashboard.pages.dev',
+    url:'https://minesafe.iraw.one',
     members:['Harta Deddy Irawan','Sashi Kumar','Isabella Gbefa','Shania Clauren'],
   },
 
