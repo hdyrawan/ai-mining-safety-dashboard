@@ -888,10 +888,10 @@ function goToNextPresenter() {
   gap: 5px;
   justify-content: center;
 }
-.team-flag { font-size: 1rem; line-height: 1; }
+.team-flag { font-size: 1.4rem; line-height: 1; }
 .team-country {
-  font-size: 0.68rem;
-  color: var(--text-dim);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
   letter-spacing: 0.04em;
 }
 .team-footer { margin-top: 20px; font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
