@@ -6,6 +6,7 @@ import { presentationSlides, presenters } from '../data/mockData.js'
 const router = useRouter()
 const current = ref(0)
 const selectedPresenter = ref(null)
+const imageError = ref({})
 
 const activeSlides = computed(() => {
   if (!selectedPresenter.value) return presentationSlides
@@ -32,6 +33,10 @@ function backToTeam() {
 
 function getPresenter(memberId) {
   return presenters.find(p => p.id === memberId) || null
+}
+
+function onPhotoError(id) {
+  imageError.value = { ...imageError.value, [id]: true }
 }
 
 function onKey(e) {
@@ -171,7 +176,15 @@ function goToNextPresenter() {
                 @click="selectPresenter(getPresenter(m.id))"
                 @keydown.enter="selectPresenter(getPresenter(m.id))"
               >
-                <div class="team-avatar">{{ getPresenter(m.id) ? getPresenter(m.id).initials : m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
+                <template v-if="getPresenter(m.id)?.photoSrc && !imageError[m.id]">
+                  <img
+                    :src="getPresenter(m.id).photoSrc"
+                    :alt="m.name"
+                    class="team-photo-avatar"
+                    @error="onPhotoError(m.id)"
+                  />
+                </template>
+                <div v-else class="team-avatar">{{ getPresenter(m.id) ? getPresenter(m.id).initials : m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
                 <div class="team-name">{{ m.name }}</div>
                 <div v-if="getPresenter(m.id)?.flag" class="team-origin">
                   <span class="team-flag">{{ getPresenter(m.id).flag }}</span>
@@ -865,20 +878,34 @@ function goToNextPresenter() {
 .team-card-clickable:focus-visible {
   border-top-color: var(--slide-accent, var(--accent-blue));
   background: rgba(59, 130, 246, 0.07);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(59, 130, 246, 0.3);
 }
 .team-card-clickable:active { transform: translateY(-1px); }
 .team-avatar {
-  width: 56px; height: 56px;
+  width: 96px; height: 96px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent-blue), #6366f1);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem; font-weight: 800; color: white; letter-spacing: -0.5px;
-  transition: box-shadow 0.2s ease;
+  font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: -0.5px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
 }
-.team-card-clickable:hover .team-avatar {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+.team-photo-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid rgba(59, 130, 246, 0.8);
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.35);
+  background: rgba(37, 99, 235, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+.team-card-clickable:hover .team-avatar,
+.team-card-clickable:hover .team-photo-avatar {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.45), 0 0 28px rgba(59, 130, 246, 0.4);
 }
 .team-name { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
 .team-role { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; flex: 1; }

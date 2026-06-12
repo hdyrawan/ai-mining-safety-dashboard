@@ -1327,6 +1327,7 @@ export const presenters = [
     role: 'Lead Developer & System Architecture',
     flag: '🇮🇩',
     country: 'Indonesia',
+    photoSrc: '/images/mining/harta.png',
     slideIndices: [0, 1, 11, 13],
   },
   {
@@ -1336,6 +1337,7 @@ export const presenters = [
     role: 'Worker Health & Medical Safety',
     flag: '🇳🇵',
     country: 'Nepal',
+    photoSrc: '/images/mining/sashi.png',
     slideIndices: [12, 14, 15, 17, 18, 19],
   },
   {
@@ -1345,6 +1347,7 @@ export const presenters = [
     role: 'Health and Safety, ESG Officer',
     flag: '🇬🇭',
     country: 'Ghana',
+    photoSrc: '/images/mining/isabella.png',
     slideIndices: [2, 3, 8, 16, 20],
   },
   {
@@ -1354,6 +1357,7 @@ export const presenters = [
     role: 'Finance & Business Value',
     flag: '🇮🇩',
     country: 'Indonesia',
+    photoSrc: '/images/mining/shania.png',
     slideIndices: [4, 5, 9, 10],
   },
 ]
