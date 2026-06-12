@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { presentationSlides, presenters } from '../data/mockData.js'
 
@@ -7,6 +7,9 @@ const router = useRouter()
 const current = ref(0)
 const selectedPresenter = ref(null)
 const imageError = ref({})
+const videoError = ref({})
+const activeWavingId = ref(null)
+const waveTimers = {}
 
 const activeSlides = computed(() => {
   if (!selectedPresenter.value) return presentationSlides
@@ -39,6 +42,32 @@ function onPhotoError(id) {
   imageError.value = { ...imageError.value, [id]: true }
 }
 
+function triggerWave(presenter) {
+  if (!presenter) return
+  clearTimeout(waveTimers[presenter.id])
+  // Null first so Vue destroys and recreates the video on re-click
+  activeWavingId.value = null
+  nextTick(() => {
+    activeWavingId.value = presenter.id
+    if (!presenter.waveVideoSrc || videoError.value[presenter.id]) {
+      waveTimers[presenter.id] = setTimeout(() => {
+        if (activeWavingId.value === presenter.id) activeWavingId.value = null
+      }, 1500)
+    }
+  })
+}
+
+function onVideoEnd(id) {
+  if (activeWavingId.value === id) activeWavingId.value = null
+}
+
+function onVideoError(id) {
+  videoError.value = { ...videoError.value, [id]: true }
+  waveTimers[id] = setTimeout(() => {
+    if (activeWavingId.value === id) activeWavingId.value = null
+  }, 1500)
+}
+
 function onKey(e) {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next()
   else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prev()
@@ -49,7 +78,10 @@ function onKey(e) {
 }
 
 onMounted(() => { document.addEventListener('keydown', onKey) })
-onUnmounted(() => { document.removeEventListener('keydown', onKey) })
+onUnmounted(() => {
+  document.removeEventListener('keydown', onKey)
+  Object.values(waveTimers).forEach(t => clearTimeout(t))
+})
 
 const accentColor = computed(() => {
   const s = slide.value
@@ -170,21 +202,40 @@ function goToNextPresenter() {
               <div
                 v-for="m in slide.members" :key="m.name"
                 class="team-card team-card-clickable"
-                :aria-label="`Open ${m.name} presentation`"
+                :aria-label="`Play ${m.name} greeting`"
                 role="button"
                 tabindex="0"
-                @click="selectPresenter(getPresenter(m.id))"
-                @keydown.enter="selectPresenter(getPresenter(m.id))"
+                @click="triggerWave(getPresenter(m.id))"
+                @keydown.enter="triggerWave(getPresenter(m.id))"
               >
-                <template v-if="getPresenter(m.id)?.photoSrc && !imageError[m.id]">
+                <div
+                  class="avatar-wrap"
+                  :class="{ 'avatar-waving': activeWavingId === m.id && (!getPresenter(m.id)?.waveVideoSrc || videoError[m.id]) }"
+                >
+                  <!-- Video greeting -->
+                  <video
+                    v-if="getPresenter(m.id)?.waveVideoSrc && activeWavingId === m.id && !videoError[m.id]"
+                    :key="'wave-' + m.id + '-' + activeWavingId"
+                    class="team-photo-avatar"
+                    autoplay muted playsinline
+                    @ended="onVideoEnd(m.id)"
+                    @error="onVideoError(m.id)"
+                  >
+                    <source :src="getPresenter(m.id).waveVideoSrc" type="video/mp4" />
+                  </video>
+                  <!-- Static photo -->
                   <img
+                    v-else-if="getPresenter(m.id)?.photoSrc && !imageError[m.id]"
                     :src="getPresenter(m.id).photoSrc"
                     :alt="m.name"
                     class="team-photo-avatar"
                     @error="onPhotoError(m.id)"
                   />
-                </template>
-                <div v-else class="team-avatar">{{ getPresenter(m.id) ? getPresenter(m.id).initials : m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
+                  <!-- Initials fallback -->
+                  <div v-else class="team-avatar">{{ getPresenter(m.id) ? getPresenter(m.id).initials : m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
+                  <!-- Wave emoji badge (CSS fallback only) -->
+                  <div v-if="activeWavingId === m.id && (!getPresenter(m.id)?.waveVideoSrc || videoError[m.id])" class="wave-badge">👋</div>
+                </div>
                 <div class="team-name">{{ m.name }}</div>
                 <div v-if="getPresenter(m.id)?.flag" class="team-origin">
                   <span class="team-flag">{{ getPresenter(m.id).flag }}</span>
@@ -883,14 +934,46 @@ function goToNextPresenter() {
   box-shadow: 0 12px 36px rgba(59, 130, 246, 0.3);
 }
 .team-card-clickable:active { transform: translateY(-1px); }
+.avatar-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.team-card-clickable:hover .avatar-wrap {
+  transform: scale(1.04);
+}
+.avatar-wrap.avatar-waving {
+  animation: avatarWave 0.45s ease 3;
+}
+@keyframes avatarWave {
+  0%   { transform: rotate(0deg) scale(1); }
+  25%  { transform: rotate(-4deg) scale(1.04); }
+  50%  { transform: rotate(4deg) scale(1.06); }
+  75%  { transform: rotate(-2deg) scale(1.04); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+.wave-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 1.5rem;
+  line-height: 1;
+  pointer-events: none;
+  animation: waveBadgePop 0.25s ease forwards;
+}
+@keyframes waveBadgePop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
 .team-avatar {
   width: 150px; height: 150px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--accent-blue), #6366f1);
   display: flex; align-items: center; justify-content: center;
   font-size: 2.4rem; font-weight: 800; color: white; letter-spacing: -0.5px;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-  flex-shrink: 0;
 }
 .team-photo-avatar {
   width: 150px;
@@ -900,13 +983,6 @@ function goToNextPresenter() {
   border: 3px solid rgba(59, 130, 246, 0.85);
   box-shadow: 0 0 32px rgba(59, 130, 246, 0.4);
   background: rgba(37, 99, 235, 0.25);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  flex-shrink: 0;
-}
-.team-card-clickable:hover .team-avatar,
-.team-card-clickable:hover .team-photo-avatar {
-  transform: scale(1.04);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.45), 0 0 36px rgba(59, 130, 246, 0.45);
 }
 @media (max-width: 1200px) {
   .team-photo-avatar,

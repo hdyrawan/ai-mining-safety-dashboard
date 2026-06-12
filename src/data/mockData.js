@@ -1328,6 +1328,7 @@ export const presenters = [
     flag: '🇮🇩',
     country: 'Indonesia',
     photoSrc: '/images/mining/harta.png',
+    waveVideoSrc: '/images/mining/harta-intro-video-compress.mp4',
     slideIndices: [0, 1, 11, 13],
   },
   {
@@ -1338,6 +1339,7 @@ export const presenters = [
     flag: '🇳🇵',
     country: 'Nepal',
     photoSrc: '/images/mining/sashi.png',
+    waveVideoSrc: '/images/mining/sashi-intro-video-compress.mp4',
     slideIndices: [12, 14, 15, 17, 18, 19],
   },
   {
@@ -1348,6 +1350,7 @@ export const presenters = [
     flag: '🇬🇭',
     country: 'Ghana',
     photoSrc: '/images/mining/isabella.png',
+    waveVideoSrc: '/images/mining/Isabella-intro-video.mp4',
     slideIndices: [2, 3, 8, 16, 20],
   },
   {
