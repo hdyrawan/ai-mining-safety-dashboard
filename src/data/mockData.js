@@ -1325,6 +1325,8 @@ export const presenters = [
     initials: 'HD',
     name: 'Harta Deddy Irawan',
     role: 'Lead Developer & System Architecture',
+    flag: '🇮🇩',
+    country: 'Indonesia',
     slideIndices: [0, 1, 11, 12, 13],
   },
   {
@@ -1332,6 +1334,8 @@ export const presenters = [
     initials: 'SK',
     name: 'Sashi Kumar',
     role: 'Worker Health & Medical Safety',
+    flag: '🇳🇵',
+    country: 'Nepal',
     slideIndices: [14, 15, 17, 18, 19],
   },
   {
@@ -1339,6 +1343,8 @@ export const presenters = [
     initials: 'IG',
     name: 'Isabella Gbefa',
     role: 'Health and Safety, ESG Officer',
+    flag: '🇬🇭',
+    country: 'Ghana',
     slideIndices: [2, 3, 8, 16, 20],
   },
   {
@@ -1346,6 +1352,8 @@ export const presenters = [
     initials: 'SC',
     name: 'Shania Clauren',
     role: 'Finance & Business Value',
+    flag: '🇮🇩',
+    country: 'Indonesia',
     slideIndices: [4, 5, 9, 10],
   },
 ]

@@ -77,6 +77,19 @@ const statusColor = { critical: '#ef4444', warning: '#f59e0b', normal: '#22c55e'
 const isLastPresenterSlide = computed(() =>
   !!selectedPresenter.value && current.value === total.value - 1
 )
+
+const PRESENTER_ORDER = ['isabella', 'harta', 'sashi', 'shania']
+
+const nextPresenter = computed(() => {
+  if (!selectedPresenter.value) return null
+  const idx = PRESENTER_ORDER.indexOf(selectedPresenter.value.id)
+  if (idx === -1 || idx === PRESENTER_ORDER.length - 1) return null
+  return presenters.find(p => p.id === PRESENTER_ORDER[idx + 1]) || null
+})
+
+function goToNextPresenter() {
+  if (nextPresenter.value) selectPresenter(nextPresenter.value)
+}
 </script>
 
 <template>
@@ -103,7 +116,7 @@ const isLastPresenterSlide = computed(() =>
       <div class="pb-left">
         <div class="pb-avatar">{{ selectedPresenter.initials }}</div>
         <div class="pb-info">
-          <div class="pb-name">{{ selectedPresenter.name }}</div>
+          <div class="pb-name">{{ selectedPresenter.name }} {{ selectedPresenter.flag }}</div>
           <div class="pb-role">{{ selectedPresenter.role }}</div>
         </div>
       </div>
@@ -160,8 +173,11 @@ const isLastPresenterSlide = computed(() =>
               >
                 <div class="team-avatar">{{ getPresenter(m.id) ? getPresenter(m.id).initials : m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
                 <div class="team-name">{{ m.name }}</div>
+                <div v-if="getPresenter(m.id)?.flag" class="team-origin">
+                  <span class="team-flag">{{ getPresenter(m.id).flag }}</span>
+                  <span class="team-country">{{ getPresenter(m.id).country }}</span>
+                </div>
                 <div class="team-role">{{ m.role }}</div>
-                <div class="team-open-hint">Open presentation →</div>
               </div>
             </div>
             <div class="team-footer">HITSZ — Harbin Institute of Technology, Shenzhen</div>
@@ -510,13 +526,12 @@ const isLastPresenterSlide = computed(() =>
       <div class="pres-progress-bar">
         <div class="pres-progress-fill" :style="{ width: ((current + 1) / total * 100) + '%' }"></div>
       </div>
-      <button
-        v-if="isLastPresenterSlide"
-        class="pres-nav-btn primary"
-        @click="backToTeam"
-      >
-        End · Back to Team ↩
-      </button>
+      <template v-if="isLastPresenterSlide">
+        <button class="pres-nav-btn" @click="backToTeam">↩ Back to Team</button>
+        <button v-if="nextPresenter" class="pres-nav-btn primary" @click="goToNextPresenter">
+          Next: {{ nextPresenter.name }} {{ nextPresenter.flag }} →
+        </button>
+      </template>
       <button
         v-else
         class="pres-nav-btn primary"
@@ -867,19 +882,18 @@ const isLastPresenterSlide = computed(() =>
 }
 .team-name { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
 .team-role { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; flex: 1; }
-.team-open-hint {
-  font-size: 0.68rem;
-  color: var(--accent-blue);
-  font-weight: 600;
-  opacity: 0.6;
-  border-top: 1px solid var(--border-base);
-  padding-top: 8px;
-  margin-top: 2px;
-  width: 100%;
-  text-align: center;
-  transition: opacity 0.2s ease;
+.team-origin {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
 }
-.team-card-clickable:hover .team-open-hint { opacity: 1; }
+.team-flag { font-size: 1rem; line-height: 1; }
+.team-country {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
 .team-footer { margin-top: 20px; font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
 
 /* ─────────────────────────────────────────────────────────────
