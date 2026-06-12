@@ -273,4 +273,13 @@ function goDroneMonitoring() { router.push('/drone-monitoring') }
   .drone-count   { display: none; }
   .live-time     { display: none; }
 }
+
+@media (max-width: 600px) {
+  .app-header    { padding: 0 12px; gap: 8px; }
+  .header-center { display: none; }
+  .btn-theme-toggle { display: none; }
+  .header-title  { font-size: 0.76rem; }
+  .alert-count-badge { font-size: 0.68rem; padding: 3px 7px; gap: 4px; }
+  .btn-presentation { padding: 5px 10px; font-size: 0.74rem; }
+}
 </style>

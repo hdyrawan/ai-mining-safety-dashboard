@@ -1630,4 +1630,140 @@ function goToNextPresenter() {
 
 /* ── Fade-in animation for list items ── */
 @keyframes fade-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+
+/* ─────────────────────────────────────────────────────────────
+   MOBILE (≤ 768px) — preserve desktop, fix iPhone Safari
+───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Topbar: wrap progress dots onto a second row */
+  .pres-topbar {
+    padding: 10px 16px;
+    padding-top: max(10px, env(safe-area-inset-top, 10px));
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .pres-brand {
+    font-size: 0.7rem;
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pres-progress-dots {
+    order: 3;
+    flex-basis: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 4px;
+    padding-bottom: 2px;
+  }
+  .pres-progress-dots::-webkit-scrollbar { display: none; }
+  .pres-topbar-right { gap: 6px; flex-shrink: 0; }
+  .pres-slide-count  { font-size: 0.65rem; }
+  .pres-exit-btn     { padding: 4px 10px; font-size: 0.72rem; }
+
+  /* Presenter bar: compact */
+  .presenter-bar { padding: 8px 16px; gap: 8px; }
+  .pb-center     { display: none; }
+  .pb-role       { display: none; }
+  .pb-back-btn   { padding: 4px 10px; font-size: 0.7rem; }
+
+  /* Stage: allow vertical scroll instead of clipping */
+  .pres-stage {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    padding-bottom: 20px;
+  }
+
+  /* Slide: auto-height so content can exceed the stage height */
+  .pres-slide { height: auto; align-items: flex-start; }
+
+  /* All slide wrappers: remove fixed height + overflow clip */
+  .slide-center-wrap,
+  .slide-full-wrap,
+  .slide-agents-wrap,
+  .slide-dashboard-wrap,
+  .slide-problem-wrap,
+  .slide-comparison-wrap,
+  .slide-solution-wrap,
+  .slide-training-wrap,
+  .slide-visits-wrap {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* Title/takeaway/thankyou: top-align instead of vertical-center */
+  .slide-center-wrap { justify-content: flex-start; padding-top: 8px; }
+
+  /* Two-column → single column */
+  .pres-slide-inner  { grid-template-columns: 1fr; height: auto; gap: 20px; align-items: flex-start; }
+  .slide-agents-wrap { grid-template-columns: 1fr; gap: 20px; }
+  .slide-dashboard-wrap { grid-template-columns: 1fr; gap: 20px; }
+  .slide-problem-wrap   { grid-template-columns: 1fr; gap: 20px; }
+  .slide-training-wrap  { grid-template-columns: 1fr; gap: 20px; }
+
+  /* Comparison/Solution: drop the centre-divider column */
+  .comp-body { grid-template-columns: 1fr 1fr; gap: 12px; overflow: visible; }
+  .comp-divider { display: none; }
+  .comp-col   { overflow: visible; }
+  .sol-body   { grid-template-columns: 1fr; gap: 12px; overflow: visible; }
+  .sol-col    { height: auto; overflow: visible; }
+  .sol-arrow  { display: none; }
+
+  /* Visits: 5-col → 2-col */
+  .slide-visits-wrap { overflow: visible; }
+  .visits-grid { grid-template-columns: repeat(2, 1fr); overflow: visible; }
+
+  /* Fix remaining inner elements locked to height:100% */
+  .agents-right { height: auto; overflow: visible; }
+  .dash-right   { height: auto; }
+
+  /* Small fact/why/data grids → single column */
+  .pres-fact-grid,
+  .pres-why-grid,
+  .pres-data-sources,
+  .train-principles { grid-template-columns: 1fr; }
+
+  /* Typography scale-down */
+  .pres-slide-number { font-size: 2rem; margin-bottom: 0; }
+  .pres-title     { font-size: 1.35rem; line-height: 1.2; }
+  .pres-subtitle  { font-size: 0.8rem; }
+  .pres-stat-value { font-size: 2.4rem; }
+  .title-main     { font-size: 1.8rem; letter-spacing: -0.5px; line-height: 1.1; }
+  .title-icon     { font-size: 2.5rem; }
+  .title-sub      { font-size: 0.9rem; margin-bottom: 12px; }
+
+  /* Team slide: single column */
+  .team-grid  { grid-template-columns: 1fr; max-width: 340px; }
+  .team-card  { min-height: auto; padding: 24px 20px; }
+  .team-header { margin-bottom: 16px; }
+
+  /* Dashboard iframe: min-height so it is usable */
+  .iframe-shell { min-height: 220px; }
+
+  /* Photo panel: shorter on mobile */
+  .slide-photo-img { height: 160px; }
+
+  /* Bottom nav: compact + safe-area */
+  .pres-bottombar {
+    padding: 10px 16px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pres-nav-btn {
+    padding: 7px 12px;
+    font-size: 0.72rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .pres-progress-bar { min-width: 40px; }
+}
 </style>
