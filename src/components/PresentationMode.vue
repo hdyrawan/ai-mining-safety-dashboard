@@ -7,8 +7,11 @@ const router = useRouter()
 const current = ref(0)
 const selectedPresenter = ref(null)
 const imageError = ref({})
-const videoError = ref({})
-const activeWavingId = ref(null)
+const videoErrors = ref({})
+const activeVideoId = ref(null)
+const videoReadyId = ref(null)
+const fallbackWavingId = ref(null)
+const videoClickCounts = ref({})
 const waveTimers = {}
 
 const activeSlides = computed(() => {
@@ -42,30 +45,62 @@ function onPhotoError(id) {
   imageError.value = { ...imageError.value, [id]: true }
 }
 
-function triggerWave(presenter) {
-  if (!presenter) return
-  clearTimeout(waveTimers[presenter.id])
-  // Null first so Vue destroys and recreates the video on re-click
-  activeWavingId.value = null
-  nextTick(() => {
-    activeWavingId.value = presenter.id
-    if (!presenter.waveVideoSrc || videoError.value[presenter.id]) {
-      waveTimers[presenter.id] = setTimeout(() => {
-        if (activeWavingId.value === presenter.id) activeWavingId.value = null
-      }, 1500)
-    }
-  })
+function getInitials(id, name) {
+  const p = getPresenter(id)
+  return p ? p.initials : name.split(' ').map(w => w[0]).slice(0, 2).join('')
 }
 
-function onVideoEnd(id) {
-  if (activeWavingId.value === id) activeWavingId.value = null
+function triggerFallback(id) {
+  fallbackWavingId.value = id
+  clearTimeout(waveTimers['fb_' + id])
+  waveTimers['fb_' + id] = setTimeout(() => {
+    if (fallbackWavingId.value === id) fallbackWavingId.value = null
+  }, 1500)
+}
+
+function triggerWave(presenter) {
+  if (!presenter) return
+  // Reset any prior state for this presenter
+  clearTimeout(waveTimers[presenter.id])
+  if (videoReadyId.value === presenter.id) videoReadyId.value = null
+  if (activeVideoId.value === presenter.id) activeVideoId.value = null
+  if (fallbackWavingId.value === presenter.id) fallbackWavingId.value = null
+
+  const hasVideo = !!(presenter.waveVideoSrc && !videoErrors.value[presenter.id])
+  if (hasVideo) {
+    videoClickCounts.value = { ...videoClickCounts.value, [presenter.id]: (videoClickCounts.value[presenter.id] || 0) + 1 }
+    activeVideoId.value = presenter.id
+    // Safety: if canplay never fires in 3s, fall back
+    waveTimers[presenter.id] = setTimeout(() => {
+      if (activeVideoId.value === presenter.id && videoReadyId.value !== presenter.id) {
+        activeVideoId.value = null
+        triggerFallback(presenter.id)
+      }
+    }, 3000)
+  } else {
+    triggerFallback(presenter.id)
+  }
+}
+
+function onVideoCanPlay(id) {
+  if (activeVideoId.value === id) {
+    clearTimeout(waveTimers[id])
+    videoReadyId.value = id
+  }
+}
+
+function onVideoEnded(id) {
+  videoReadyId.value = null
+  activeVideoId.value = null
 }
 
 function onVideoError(id) {
-  videoError.value = { ...videoError.value, [id]: true }
-  waveTimers[id] = setTimeout(() => {
-    if (activeWavingId.value === id) activeWavingId.value = null
-  }, 1500)
+  const p = presenters.find(pr => pr.id === id)
+  console.warn(`Wave video failed for ${p?.name}: ${p?.waveVideoSrc}`)
+  videoErrors.value = { ...videoErrors.value, [id]: true }
+  videoReadyId.value = null
+  activeVideoId.value = null
+  triggerFallback(id)
 }
 
 function onKey(e) {
@@ -210,31 +245,41 @@ function goToNextPresenter() {
               >
                 <div
                   class="avatar-wrap"
-                  :class="{ 'avatar-waving': activeWavingId === m.id && (!getPresenter(m.id)?.waveVideoSrc || videoError[m.id]) }"
+                  :class="{ 'avatar-waving': fallbackWavingId === m.id }"
                 >
-                  <!-- Video greeting -->
-                  <video
-                    v-if="getPresenter(m.id)?.waveVideoSrc && activeWavingId === m.id && !videoError[m.id]"
-                    :key="'wave-' + m.id + '-' + activeWavingId"
-                    class="team-photo-avatar"
-                    autoplay muted playsinline
-                    @ended="onVideoEnd(m.id)"
-                    @error="onVideoError(m.id)"
-                  >
-                    <source :src="getPresenter(m.id).waveVideoSrc" type="video/mp4" />
-                  </video>
-                  <!-- Static photo -->
-                  <img
-                    v-else-if="getPresenter(m.id)?.photoSrc && !imageError[m.id]"
-                    :src="getPresenter(m.id).photoSrc"
-                    :alt="m.name"
-                    class="team-photo-avatar"
-                    @error="onPhotoError(m.id)"
-                  />
-                  <!-- Initials fallback -->
-                  <div v-else class="team-avatar">{{ getPresenter(m.id) ? getPresenter(m.id).initials : m.name.split(' ').map(w => w[0]).slice(0,2).join('') }}</div>
-                  <!-- Wave emoji badge (CSS fallback only) -->
-                  <div v-if="activeWavingId === m.id && (!getPresenter(m.id)?.waveVideoSrc || videoError[m.id])" class="wave-badge">👋</div>
+                  <div class="media-circle">
+                    <!-- Photo: always rendered; fades out when video is ready -->
+                    <img
+                      v-if="getPresenter(m.id)?.photoSrc && !imageError[m.id]"
+                      :src="getPresenter(m.id).photoSrc"
+                      :alt="m.name"
+                      class="media-fill"
+                      :class="{ 'media-hidden': videoReadyId === m.id }"
+                      @error="onPhotoError(m.id)"
+                    />
+                    <div
+                      v-else
+                      class="media-initials"
+                      :class="{ 'media-hidden': videoReadyId === m.id }"
+                    >{{ getInitials(m.id, m.name) }}</div>
+                    <!-- Video: in DOM when clicked, visible only after canplay -->
+                    <video
+                      v-if="activeVideoId === m.id && !videoErrors[m.id]"
+                      :key="'v-' + m.id + '-' + (videoClickCounts[m.id] || 0)"
+                      class="media-fill"
+                      :class="{ 'media-hidden': videoReadyId !== m.id }"
+                      autoplay
+                      muted
+                      playsinline
+                      @canplay="onVideoCanPlay(m.id)"
+                      @ended="onVideoEnded(m.id)"
+                      @error="onVideoError(m.id)"
+                    >
+                      <source :src="getPresenter(m.id).waveVideoSrc" type="video/mp4" />
+                    </video>
+                    <!-- Wave badge for CSS fallback only -->
+                    <div v-if="fallbackWavingId === m.id" class="wave-badge">👋</div>
+                  </div>
                 </div>
                 <div class="team-name">{{ m.name }}</div>
                 <div v-if="getPresenter(m.id)?.flag" class="team-origin">
@@ -968,25 +1013,45 @@ function goToNextPresenter() {
   from { transform: scale(0); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
 }
-.team-avatar {
-  width: 150px; height: 150px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent-blue), #6366f1);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.4rem; font-weight: 800; color: white; letter-spacing: -0.5px;
-}
-.team-photo-avatar {
+.media-circle {
   width: 150px;
   height: 150px;
   border-radius: 999px;
-  object-fit: cover;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
   border: 3px solid rgba(59, 130, 246, 0.85);
   box-shadow: 0 0 32px rgba(59, 130, 246, 0.4);
-  background: rgba(37, 99, 235, 0.25);
+  background: rgba(37, 99, 235, 0.2);
+}
+.media-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+.media-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.media-initials {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent-blue), #6366f1);
+  transition: opacity 0.2s ease;
 }
 @media (max-width: 1200px) {
-  .team-photo-avatar,
-  .team-avatar {
+  .media-circle {
     width: 128px;
     height: 128px;
   }
