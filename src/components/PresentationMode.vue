@@ -846,7 +846,7 @@ function goToNextPresenter() {
 .team-header { text-align: center; margin-bottom: 32px; }
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
   gap: 28px;
   justify-content: center;
   width: min(100%, 1400px);
@@ -854,18 +854,19 @@ function goToNextPresenter() {
 }
 @media (max-width: 1400px) {
   .team-grid {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
   }
 }
 .team-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-xl);
-  padding: 24px 16px;
+  padding: 32px 28px;
+  min-height: 340px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-align: center;
   border-top: 3px solid var(--accent-blue);
 }
@@ -883,29 +884,36 @@ function goToNextPresenter() {
 }
 .team-card-clickable:active { transform: translateY(-1px); }
 .team-avatar {
-  width: 96px; height: 96px;
-  border-radius: 50%;
+  width: 150px; height: 150px;
+  border-radius: 999px;
   background: linear-gradient(135deg, var(--accent-blue), #6366f1);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: -0.5px;
+  font-size: 2.4rem; font-weight: 800; color: white; letter-spacing: -0.5px;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   flex-shrink: 0;
 }
 .team-photo-avatar {
-  width: 96px;
-  height: 96px;
+  width: 150px;
+  height: 150px;
   border-radius: 999px;
   object-fit: cover;
-  border: 2px solid rgba(59, 130, 246, 0.8);
-  box-shadow: 0 0 24px rgba(59, 130, 246, 0.35);
+  border: 3px solid rgba(59, 130, 246, 0.85);
+  box-shadow: 0 0 32px rgba(59, 130, 246, 0.4);
   background: rgba(37, 99, 235, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   flex-shrink: 0;
 }
 .team-card-clickable:hover .team-avatar,
 .team-card-clickable:hover .team-photo-avatar {
-  transform: scale(1.05);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.45), 0 0 28px rgba(59, 130, 246, 0.4);
+  transform: scale(1.04);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.45), 0 0 36px rgba(59, 130, 246, 0.45);
+}
+@media (max-width: 1200px) {
+  .team-photo-avatar,
+  .team-avatar {
+    width: 128px;
+    height: 128px;
+  }
 }
 .team-name { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
 .team-role { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; flex: 1; }
